@@ -1,7 +1,7 @@
 name: Terraform AWS Workflow
 on:
   push:
-    branches: [ my-feature ]
+    branches: [ joo ]
     paths: 
       - 'joo/**'
 
