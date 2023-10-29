@@ -1,9 +1,10 @@
 name: Terraform AWS Workflow
 on:
-  push:
-    branches: [ joo ]
-    paths: 
-      - 'joo/**'
+  workflow_dispatch:
+  # push:
+    # branches: [ joo ]
+    # paths: 
+    #   - 'joo/**'
 
 jobs:
   tf_code_check:  

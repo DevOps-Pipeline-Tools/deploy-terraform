@@ -1,9 +1,10 @@
 terraform {
-  backend "remote" {
-    organization = "hcta-juiceb"
+  backend "s3" {
+    bucket  = "github-actions-juiceb"
+    key     = "joo/terraform.tfstate"
+    region  = "ap-northeast-2"
+    encrypt = true
 
-    workspaces {
-      name = "github-actions-juiceb-workspace"
-    }
+    dynamodb_table = "tf-backend"
   }
 }
