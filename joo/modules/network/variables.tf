@@ -8,6 +8,12 @@ variable "create_vpc" {
   # default     = true
 }
 
+variable "multi_az" {
+  description = "Settings for HA"
+  type        = bool
+  # default     = true
+}
+
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -43,12 +49,6 @@ variable "create_public_subnet" {
   # default     = true
 }
 
-variable "public_multi_az" {
-  description = "Controls if Public Subnets should be created"
-  type        = bool
-  # default     = true
-}
-
 variable "public_subnet_cidr" {
   description = "The IPv4 CIDR block for the Public Subnets"
   type        = list(string)
@@ -66,12 +66,6 @@ variable "public_subnet_tags" {
 ################################################################################
 
 variable "create_web_subnet" {
-  description = "Controls if WEB Subnets should be created"
-  type        = bool
-  # default     = true
-}
-
-variable "web_multi_az" {
   description = "Controls if WEB Subnets should be created"
   type        = bool
   # default     = true
@@ -99,12 +93,6 @@ variable "create_was_subnet" {
   # default     = true
 }
 
-variable "was_multi_az" {
-  description = "Controls if WAS Subnets should be created"
-  type        = bool
-  # default     = true
-}
-
 variable "was_subnet_cidr" {
   description = "The IPv4 CIDR block for the WAS Subnets"
   type        = list(string)
@@ -122,12 +110,6 @@ variable "was_subnet_tags" {
 ################################################################################
 
 variable "create_db_subnet" {
-  description = "Controls if DB Subnets should be created"
-  type        = bool
-  # default     = true
-}
-
-variable "db_multi_az" {
   description = "Controls if DB Subnets should be created"
   type        = bool
   # default     = true
