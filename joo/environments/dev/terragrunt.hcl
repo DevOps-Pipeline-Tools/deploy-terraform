@@ -1,5 +1,10 @@
+include "root" {
+  # find_in_parent_folders(): This function returns the absolute path to the first terragrunt.hcl file it finds in the parent folders above the current terragrunt.hcl file. 
+  path = find_in_parent_folders()
+}
+
 terraform {
-  source = "../../modules/network"
+  source = "../../modules//network"
 }
 
 inputs = {
@@ -8,7 +13,7 @@ inputs = {
   # VPC
   ################################################################################
   create_vpc = true
-  multi_az = false
+  multi_az = true
   vpc_tags = "vpc"
   name = "dev"
   azs  = ["ap-northeast-2a", "ap-northeast-2c"]

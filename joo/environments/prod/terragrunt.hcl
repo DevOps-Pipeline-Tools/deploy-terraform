@@ -1,3 +1,8 @@
+include "root" {
+  # find_in_parent_folders(): This function returns the absolute path to the first terragrunt.hcl file it finds in the parent folders above the current terragrunt.hcl file. 
+  path = find_in_parent_folders()
+}
+
 terraform {
   source = "../../modules/network"
 }
