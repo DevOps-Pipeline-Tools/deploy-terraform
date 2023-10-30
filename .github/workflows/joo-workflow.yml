@@ -1,0 +1,39 @@
+name: Terraform AWS Workflow
+on:
+  workflow_dispatch:
+  # push:
+    # branches: [ joo ]
+    # paths: 
+    #   - 'joo/**'
+
+jobs:
+  tf_code_check:  
+    environment: joo
+    defaults:
+      run:
+        working-directory: ./joo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout tf code in runner environment
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_version: "1.6.2"
+
+    - name: Terraform init
+      run: terraform init
+
+    - name: Terraform validate
+      run: terraform validate -no-color
+
+    - name: Terraform plan
+      run: terraform plan -no-color
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
