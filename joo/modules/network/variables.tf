@@ -43,12 +43,6 @@ variable "vpc_tags" {
 # Public Subnets
 ################################################################################
 
-variable "create_public_subnet" {
-  description = "Controls if Public Subnets should be created"
-  type        = bool
-  # default     = true
-}
-
 variable "public_subnet_cidr" {
   description = "The IPv4 CIDR block for the Public Subnets"
   type        = list(string)
@@ -64,12 +58,6 @@ variable "public_subnet_tags" {
 ################################################################################
 # WEB Subnets
 ################################################################################
-
-variable "create_web_subnet" {
-  description = "Controls if WEB Subnets should be created"
-  type        = bool
-  # default     = true
-}
 
 variable "web_subnet_cidr" {
   description = "The IPv4 CIDR block for the WEB Subnets"
@@ -87,12 +75,6 @@ variable "web_subnet_tags" {
 # WAS Subnets
 ################################################################################
 
-variable "create_was_subnet" {
-  description = "Controls if WAS Subnets should be created"
-  type        = bool
-  # default     = true
-}
-
 variable "was_subnet_cidr" {
   description = "The IPv4 CIDR block for the WAS Subnets"
   type        = list(string)
@@ -108,12 +90,6 @@ variable "was_subnet_tags" {
 ################################################################################
 # DB Subnets
 ################################################################################
-
-variable "create_db_subnet" {
-  description = "Controls if DB Subnets should be created"
-  type        = bool
-  # default     = true
-}
 
 variable "db_subnet_cidr" {
   description = "The IPv4 CIDR block for the DB Subnets"
