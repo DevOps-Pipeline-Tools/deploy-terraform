@@ -35,8 +35,8 @@ jobs:
         aws-region: ap-northeast-2
 
     - name: Check terragrunt HCL
-      id: hclfmt
       uses: gruntwork-io/terragrunt-action@v1
+      id: hclfmt
       with:
         tf_version: ${{ env.tf_version }}
         tg_version: ${{ env.tg_version }}
@@ -44,6 +44,7 @@ jobs:
         tg_command: 'hclfmt --terragrunt-check --terragrunt-diff'
 
     - name: Terragrunt validate
+      uses: gruntwork-io/terragrunt-action@v1
       id: validate
       with:
         tf_version: ${{ env.tf_version }}
@@ -53,6 +54,7 @@ jobs:
       continue-on-error: true
 
     - name: Terragrunt plan
+      uses: gruntwork-io/terragrunt-action@v1
       id: plan
       if: github.event_name == 'pull_request'
       with:
