@@ -8,6 +8,7 @@ on:
     branches: [ main, joo ]
     paths: 
       - 'joo/**'
+      - '.github/workflows/joo-workflow.yml'
 
 jobs:
   tf_code_check: 
