@@ -41,6 +41,21 @@ output "public_subnets_cidr_blocks" {
   value       = compact(aws_subnet.public[*].cidr_block)
 }
 
+output "public_route_table_ids" {
+  description = "List of IDs of public route tables"
+  value       = aws_route_table.public[*].id
+}
+
+output "public_internet_gateway_route_id" {
+  description = "ID of the internet gateway route"
+  value       = try(aws_route.public_internet_gateway[0].id, null)
+}
+
+output "public_route_table_association_ids" {
+  description = "List of IDs of the public route table association"
+  value       = aws_route_table_association.public[*].id
+}
+
 ################################################################################
 # WEB Subnets
 ################################################################################
@@ -58,6 +73,21 @@ output "web_subnet_arns" {
 output "web_subnets_cidr_blocks" {
   description = "List of cidr_blocks of WEB subnets"
   value       = compact(aws_subnet.web[*].cidr_block)
+}
+
+output "web_route_table_ids" {
+  description = "List of IDs of web route tables"
+  value       = aws_route_table.web[*].id
+}
+
+output "web_nat_gateway_route_ids" {
+  description = "List of IDs of the web nat gateway route"
+  value       = aws_route.web_nat_gateway[*].id
+}
+
+output "web_route_table_association_ids" {
+  description = "List of IDs of the web route table association"
+  value       = aws_route_table_association.web[*].id
 }
 
 ################################################################################
@@ -79,6 +109,16 @@ output "was_subnets_cidr_blocks" {
   value       = compact(aws_subnet.was[*].cidr_block)
 }
 
+output "was_route_table_ids" {
+  description = "List of IDs of was route tables"
+  value       = aws_route_table.web[*].id
+}
+
+output "was_route_table_association_ids" {
+  description = "List of IDs of the was route table association"
+  value       = aws_route_table_association.was[*].id
+}
+
 ################################################################################
 # DB Subnets
 ################################################################################
@@ -96,6 +136,49 @@ output "db_subnet_arns" {
 output "db_subnets_cidr_blocks" {
   description = "List of cidr_blocks of DB subnets"
   value       = compact(aws_subnet.db[*].cidr_block)
+}
+
+output "db_route_table_ids" {
+  description = "List of IDs of db route tables"
+  value       = aws_route_table.web[*].id
+}
+
+output "db_route_table_association_ids" {
+  description = "List of IDs of the db route table association"
+  value       = aws_route_table_association.db[*].id
+}
+
+################################################################################
+# Internet Gateway
+################################################################################
+
+output "igw_id" {
+  description = "The ID of the Internet Gateway"
+  value       = try(aws_internet_gateway.this[0].id, null)
+}
+
+output "igw_arn" {
+  description = "The ARN of the Internet Gateway"
+  value       = try(aws_internet_gateway.this[0].arn, null)
+}
+
+################################################################################
+# NAT Gateway
+################################################################################
+
+output "nat_ids" {
+  description = "List of allocation ID of Elastic IPs created for AWS NAT Gateway"
+  value       = aws_eip.nat[*].id
+}
+
+output "nat_public_ips" {
+  description = "List of public Elastic IPs created for AWS NAT Gateway"
+  value       = aws_eip.nat[*].public_ip
+}
+
+output "natgw_ids" {
+  description = "List of NAT Gateway IDs"
+  value       = aws_nat_gateway.this[*].id
 }
 
 ################################################################################

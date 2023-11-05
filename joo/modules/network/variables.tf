@@ -61,6 +61,12 @@ variable "public_subnet_tags" {
   # default = ["ap-northeast-2a-public-subnet", "ap-northeast-2c-public-subnet"]
 }
 
+variable "public_route_table_tags" {
+  description = "Additional information for the Public route table"
+  type        = list(string)
+  # default     = ""
+}
+
 ################################################################################
 # WEB Subnets
 ################################################################################
@@ -81,6 +87,12 @@ variable "web_subnet_tags" {
   description = "Additional information for the WEB Subnets"
   type        = list(string)
   # default = ["ap-northeast-2a-public-subnet", "ap-northeast-2c-public-subnet"]
+}
+
+variable "web_route_table_tags" {
+  description = "Additional information for the WEB route table"
+  type        = list(string)
+  # default     = ""
 }
 
 ################################################################################
@@ -125,4 +137,35 @@ variable "db_subnet_tags" {
   description = "Additional information for the DB Subnets"
   type        = list(string)
   # default = ["ap-northeast-2a-public-subnet", "ap-northeast-2c-public-subnet"]
+}
+
+################################################################################
+# Internet Gateway
+################################################################################
+
+variable "igw_tags" {
+  description = "Additional information for the Internet Gateway"
+  type        = list(string)
+  # default     = ""
+}
+
+################################################################################
+# NAT Gateway
+################################################################################
+variable "create_nat_gateway" {
+  description = "Controls if NAT Gateway should be created"
+  type        = bool
+  # default     = true
+}
+
+variable "nat_eip_tags" {
+  description = "Additional information for the EIP"
+  type        = list(string)
+  # default = ["ap-northeast-2a-nat-eip", "ap-northeast-2c-nat-eip"]
+}
+
+variable "nat_gateway_tags" {
+  description = "Additional information for the NAT Gateway"
+  type        = list(string)
+  # default = ["ap-northeast-2a-nat-eip", "ap-northeast-2c-nat-eip"]
 }
