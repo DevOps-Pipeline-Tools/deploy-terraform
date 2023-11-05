@@ -52,7 +52,9 @@ jobs:
 
     - name: terraform fmt
       id: fmt
-      run: terraform fmt -check
+      run: |
+        terraform fmt -check
+        terraform -v
       continue-on-error: true
 
     - name: terragrunt validate
