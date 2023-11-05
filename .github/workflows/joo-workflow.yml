@@ -105,7 +105,7 @@ jobs:
       if: github.event_name == 'push'
       run: terragrunt run-all apply --terragrunt-exclude-dir "**/.terragrunt-cache/**/*" --terragrunt-non-interactive
 
-    - name: Terragrunt apply
-      id: apply
+    - name: Terragrunt destroy
+      id: destroy
       if: github.event_name == 'push'
       run: terragrunt run-all destroy --terragrunt-exclude-dir "**/.terragrunt-cache/**/*" --terragrunt-non-interactive
