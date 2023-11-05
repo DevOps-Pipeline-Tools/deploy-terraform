@@ -4,8 +4,9 @@ on:
     branches: [ main ]
     paths: 
       - 'joo/**'
+      - '.github/workflows/joo-workflow.yml'
   push:
-    branches: [ main, joo ]
+    branches: [ main ]
     paths: 
       - 'joo/**'
       - '.github/workflows/joo-workflow.yml'
@@ -33,11 +34,6 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE }}
         aws-region: ap-northeast-2
 
-    # - name: Setup Terraform CLI
-    #   uses: hashicorp/setup-terraform@v2
-    #   with: 
-    #     terraform_version: "1.6.2"
-
     - name: Setup Terragrunt
       run: |
         mkdir bin
@@ -45,94 +41,71 @@ jobs:
         chmod +x bin/terragrunt
         echo "$GITHUB_WORKSPACE/joo/bin" >> $GITHUB_PATH
 
-    - name: terragrunt hclfmt
+    - name: Terragrunt hclfmt
       id: hclfmt
       run: terragrunt hclfmt --terragrunt-check --terragrunt-diff
       continue-on-error: true
 
-    - name: terraform fmt
+    - name: Terraform fmt
       id: fmt
       run: |
         terraform fmt -check
-        terraform -v
-      continue-on-error: true
 
-    - name: terragrunt validate
+    - name: Terragrunt validate
       id: validate
       run: terragrunt run-all validate --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"
 
-    - name: terragrunt plan
+    - name: Terragrunt plan
       id: plan
       run: terragrunt run-all plan --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"
 
-    # - name: Terragrunt apply
-    #   id: apply
-    #   if: github.event_name == 'pull_request'
-    #   with:
-    #     tf_version: ${{ env.tf_version }}
-    #     tg_version: ${{ env.tg_version }}
-    #     tg_dir: ${{ env.working_dir }}
-    #     tg_command: 'apply --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
-    #   continue-on-error: true
+    - name: Terraform Plan Output
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terragrunt\n${{ steps.plan.outputs.stdout }}" 
+      with: 
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: | #javascript code
+         const output = `## 테라폼 구축 계획
+          #### terragrunt hclfmt ⚙️\`${{ steps.hclfmt.outcome }}\`
+          #### terraform fmt 🖌\`${{ steps.fmt.outcome }}\`
+          #### terragrunt validate 🤖\`${{ steps.validate.outcome }}\`
+          <details><summary>문법 검사 결과</summary>
 
-    # - name: Terragrunt destroy
-    #   id: destroy
-    #   if: github.event_name == 'pull_request'
-    #   with:
-    #     tf_version: ${{ env.tf_version }}
-    #     tg_version: ${{ env.tg_version }}
-    #     tg_dir: ${{ env.working_dir }}
-    #     tg_command: 'destroy --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
+          \`\`\`\n
+          ${{ steps.validate.outputs.stdout }}
+          \`\`\`
 
-      
-    # - name: Terraform Plan Output
-    #   uses: actions/github-script@v6
-    #   if: github.event_name == 'pull_request'
-    #   env:
-    #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-    #     CHECKOV: "checkov\n${{ env.CHECKOV_RESULTS }}" 
-    #   with: 
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
-    #     script: | #javascript code
-    #      const output = `## 테라폼 구축 계획
-    #       #### terraform init ⚙️\`${{ steps.init.outcome }}\`
-    #       #### terraform fmt 🖌\`${{ steps.fmt.outcome }}\`
-    #       #### terraform validate 🤖\`${{ steps.validate.outcome }}\`
-    #       <details><summary>문법 검사 결과</summary>
+          </details>
 
-    #       \`\`\`\n
-    #       ${{ steps.validate.outputs.stdout }}
-    #       \`\`\`
+          #### terragrunt plan 📖\`${{ steps.plan.outcome }}\`
 
-    #       </details>
+          <details><summary>테라폼 구축 계획</summary>
 
-    #       #### terraform plan 📖\`${{ steps.plan.outcome }}\`
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
 
-    #       <details><summary>테라폼 구축 계획</summary>
+          </details>
 
-    #       \`\`\`\n
-    #       ${process.env.PLAN}
-    #       \`\`\`
+          **위의 내용으로 테라폼 배포를 요청합니다!**
 
-    #       </details>
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
-    #       #### Checkov 스캔 📃
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
 
-    #       <details><summary>Checkov 스캔 결과</summary>
+    - name: Terragrunt apply
+      id: apply
+      if: github.event_name == 'push'
+      run: terragrunt run-all apply --terragrunt-exclude-dir "**/.terragrunt-cache/**/*" --terragrunt-non-interactive
 
-    #       \`\`\`\n
-    #       ${process.env.CHECKOV}
-    #       \`\`\`
-
-    #       </details>
-
-    #       **위의 내용으로 테라폼 배포를 요청합니다!**
-
-    #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
-
-    #       github.rest.issues.createComment({
-    #         issue_number: context.issue.number,
-    #         owner: context.repo.owner,
-    #         repo: context.repo.repo,
-    #         body: output
-    #       })
+    - name: Terragrunt apply
+      id: apply
+      if: github.event_name == 'push'
+      run: terragrunt run-all destroy --terragrunt-exclude-dir "**/.terragrunt-cache/**/*" --terragrunt-non-interactive
