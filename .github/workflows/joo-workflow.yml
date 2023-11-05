@@ -5,7 +5,7 @@ on:
     paths: 
       - 'joo/**'
   push:
-    branches: [ main ]
+    branches: [ main, joo ]
     paths: 
       - 'joo/**'
 
@@ -62,24 +62,24 @@ jobs:
         tg_command: 'plan --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
       continue-on-error: true
 
-    - name: Terragrunt apply
-      id: apply
-      if: github.event_name == 'pull_request'
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'apply --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
-      continue-on-error: true
+    # - name: Terragrunt apply
+    #   id: apply
+    #   if: github.event_name == 'pull_request'
+    #   with:
+    #     tf_version: ${{ env.tf_version }}
+    #     tg_version: ${{ env.tg_version }}
+    #     tg_dir: ${{ env.working_dir }}
+    #     tg_command: 'apply --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
+    #   continue-on-error: true
 
-    - name: Terragrunt destroy
-      id: destroy
-      if: github.event_name == 'pull_request'
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'destroy --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
+    # - name: Terragrunt destroy
+    #   id: destroy
+    #   if: github.event_name == 'pull_request'
+    #   with:
+    #     tf_version: ${{ env.tf_version }}
+    #     tg_version: ${{ env.tg_version }}
+    #     tg_dir: ${{ env.working_dir }}
+    #     tg_command: 'destroy --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
 
       
     # - name: Terraform Plan Output
