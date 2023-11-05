@@ -33,10 +33,10 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE }}
         aws-region: ap-northeast-2
 
-    - name: Setup Terraform CLI
-      uses: hashicorp/setup-terraform@v2
-      with: 
-        terraform_version: "1.6.2"
+    # - name: Setup Terraform CLI
+    #   uses: hashicorp/setup-terraform@v2
+    #   with: 
+    #     terraform_version: "1.6.2"
 
     - name: Setup Terragrunt
       run: |
