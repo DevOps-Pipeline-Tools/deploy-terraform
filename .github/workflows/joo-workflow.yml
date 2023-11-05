@@ -17,13 +17,11 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      tf_version: '1.6.2'
-      tg_version: '0.52.1'
-      tg_dir: ./joo/
+      tg_version: 'v0.52.1'
     environment: joo
-    # defaults:
-    #   run:
-    #     working-directory: ./joo
+    defaults:
+      run:
+        working-directory: ./joo
     runs-on: ubuntu-latest
     steps:
     - name: Checkout tf code in runner environment 
@@ -35,35 +33,35 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE }}
         aws-region: ap-northeast-2
 
-    - name: Check terragrunt HCL
-      uses: gruntwork-io/terragrunt-action@v1
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2
+      with: 
+        terraform_version: "1.6.2"
+
+    - name: Setup Terragrunt
+      run: |
+        mkdir bin
+        wget -O bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/$tg_version/terragrunt_linux_amd64
+        chmod +x bin/terragrunt
+        echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+
+    - name: terragrunt hclfmt
       id: hclfmt
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'hclfmt --terragrunt-check --terragrunt-diff'
+      run: terragrunt hclfmt --terragrunt-check --terragrunt-diff
+      continue-on-error: true
 
-    - name: Terragrunt validate
-      uses: gruntwork-io/terragrunt-action@v1
+    - name: terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: terragrunt validate
       id: validate
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'validate --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
-      continue-on-error: true
+      run: terragrunt run-all validate --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"
 
-    - name: Terragrunt plan
-      uses: gruntwork-io/terragrunt-action@v1
+    - name: terragrunt plan
       id: plan
-      # if: github.event_name == 'pull_request'
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'plan --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"'
-      continue-on-error: true
+      run: terragrunt run-all plan --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"
 
     # - name: Terragrunt apply
     #   id: apply
