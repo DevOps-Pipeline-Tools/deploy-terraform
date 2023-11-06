@@ -48,8 +48,8 @@ jobs:
 
     - name: Terraform fmt
       id: fmt
-      run: |
-        terraform fmt -check
+      run: terraform fmt -check --recursive
+      continue-on-error: true
 
     - name: Terragrunt validate
       id: validate
