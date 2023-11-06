@@ -13,3 +13,22 @@ terraform {
 }
 EOF
 }
+
+generate "provider" {
+  path      = "versions.tf"
+  if_exists = "overwrite"
+  contents = <<EOF
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.23.1"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-northeast-2"
+}
+EOF
+}
