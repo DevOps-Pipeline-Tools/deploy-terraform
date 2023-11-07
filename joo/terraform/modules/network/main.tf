@@ -16,7 +16,7 @@ resource "aws_vpc" "main" {
 ################################################################################
 
 resource "aws_subnet" "public" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   vpc_id            = aws_vpc.main.id
   availability_zone = element(var.azs, count.index)
@@ -36,7 +36,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   subnet_id      = element(aws_subnet.public[*].id, count.index)
   route_table_id = aws_route_table.public.id
@@ -53,7 +53,7 @@ resource "aws_route" "public_internet_gateway" {
 ################################################################################
 
 resource "aws_subnet" "web" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   vpc_id            = aws_vpc.main.id
   availability_zone = element(var.azs, count.index)
@@ -66,7 +66,7 @@ resource "aws_subnet" "web" {
 }
 
 resource "aws_route_table" "web" {
-  count = var.multi_az ? 2 : 1 
+  count = 2
 
   vpc_id = aws_vpc.main.id
   tags = merge(
@@ -76,14 +76,14 @@ resource "aws_route_table" "web" {
 }
 
 resource "aws_route_table_association" "web" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   subnet_id      = element(aws_subnet.web[*].id, count.index)
   route_table_id = element(aws_route_table.web[*].id, count.index)
 }
 
 resource "aws_route" "web_nat_gateway" {
-  count = var.multi_az ? 2 : 1 
+  count = 2
 
   route_table_id         = element(aws_route_table.web[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
@@ -91,11 +91,28 @@ resource "aws_route" "web_nat_gateway" {
 }
 
 ################################################################################
+# Private-LB Subnets
+################################################################################
+
+resource "aws_subnet" "private_lb" {
+  count = 2
+
+  vpc_id            = aws_vpc.main.id
+  availability_zone = element(var.azs, count.index)
+  cidr_block        = element(var.private_lb_subnet_cidr, count.index)
+
+  tags = merge(
+    { "Name" = "${var.name}-${element(var.azs, count.index)}-private-lb-subnet" },
+    var.tags
+  )
+}
+
+################################################################################
 # WAS Subnets
 ################################################################################
 
 resource "aws_subnet" "was" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   vpc_id            = aws_vpc.main.id
   availability_zone = element(var.azs, count.index)
@@ -108,7 +125,7 @@ resource "aws_subnet" "was" {
 }
 
 resource "aws_route_table_association" "was" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   subnet_id      = element(aws_subnet.was[*].id, count.index)
   route_table_id = element(aws_route_table.web[*].id, count.index)
@@ -119,7 +136,7 @@ resource "aws_route_table_association" "was" {
 ################################################################################
 
 resource "aws_subnet" "db" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   vpc_id            = aws_vpc.main.id
   availability_zone = element(var.azs, count.index)
@@ -132,7 +149,7 @@ resource "aws_subnet" "db" {
 }
 
 resource "aws_route_table_association" "db" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   subnet_id      = element(aws_subnet.db[*].id, count.index)
   route_table_id = element(aws_route_table.web[*].id, count.index)
@@ -156,7 +173,7 @@ resource "aws_internet_gateway" "this" {
 ################################################################################
 
 resource "aws_eip" "nat" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   domain = "vpc"
   tags = merge(
@@ -168,7 +185,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "this" {
-  count = var.multi_az ? 2 : 1
+  count = 2
 
   allocation_id = element(aws_eip.nat[*].id, count.index)
   subnet_id     = element(aws_subnet.public[*].id, count.index)

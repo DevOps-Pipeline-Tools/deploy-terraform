@@ -28,14 +28,14 @@ resource "aws_autoscaling_group" "this" {
     id = aws_launch_template.web.id
   }
 
-  vpc_zone_identifier = var.multi_az ? var.vpc_zone_identifier : [var.vpc_zone_identifier[0]]
-  min_size            = var.multi_az ? 2 : 1
-  max_size            = var.multi_az ? 4 : 2
-  desired_capacity    = var.multi_az ? 2 : 1
+  vpc_zone_identifier = var.vpc_zone_identifier
+  min_size            = 2
+  max_size            = 4
+  desired_capacity    = 2
   # wait_for_elb_capacity     = var.wait_for_elb_capacity
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
-  # target_group_arns         = var.target_group_arns
+  # target_group_arns         = [var.target_group_arns]
   health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
 
@@ -46,8 +46,8 @@ resource "aws_autoscaling_group" "this" {
   }
 
   tag {
-      key = "Name"
-      value   = lookup(var.tags, "Name")
+      key = keys(var.tags)[0]
+      value   = lookup(var.tags, "owner")
       propagate_at_launch     = true   
   }
 }
@@ -68,7 +68,7 @@ resource "aws_security_group" "web" {
       from_port   = ingress.value
       to_port     = ingress.value
       protocol    = "tcp"
-      cidr_blocks = var.lb_sg_id
+      security_groups = [var.public_lb_sg_id]
     }
   }
 

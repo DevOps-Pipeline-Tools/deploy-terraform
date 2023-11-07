@@ -2,12 +2,6 @@
 # Common
 ################################################################################
 
-variable "multi_az" {
-  description = "Settings for HA"
-  type        = bool
-  # default     = true
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -52,6 +46,12 @@ variable "wait_for_capacity_timeout" {
   # default     = null
 }
 
+variable "target_group_arns" {
+  description = "A set of `aws_alb_target_group` ARNs, for use with Application or Network Load Balancing"
+  type        = string
+  # default     = []
+}
+
 variable "health_check_type" {
   description = "`EC2` or `ELB`. Controls how health checking is done"
   type        = string
@@ -74,9 +74,9 @@ variable "web_sg_ports" {
   # default     = {}
 }
 
-variable "lb_sg_id" {
-  description = "Security group ID of LB for ingress targets"
-  type        = list(string)
+variable "public_lb_sg_id" {
+  description = "Security group ID of Public LB for ingress targets"
+  type        = string
   # default     = ""
 }
 

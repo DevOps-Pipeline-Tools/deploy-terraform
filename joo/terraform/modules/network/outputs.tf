@@ -91,6 +91,25 @@ output "web_route_table_association_ids" {
 }
 
 ################################################################################
+# Private-LB Subnets
+################################################################################
+
+output "private_lb_subnets" {
+  description = "List of IDs of Private LB subnets"
+  value       = aws_subnet.private_lb[*].id
+}
+
+output "private_lb_subnet_arns" {
+  description = "List of ARNs of Private LB subnets"
+  value       = aws_subnet.private_lb[*].arn
+}
+
+output "private_lb_subnets_cidr_blocks" {
+  description = "List of cidr_blocks of Private LB subnets"
+  value       = compact(aws_subnet.private_lb[*].cidr_block)
+}
+
+################################################################################
 # WAS Subnets
 ################################################################################
 

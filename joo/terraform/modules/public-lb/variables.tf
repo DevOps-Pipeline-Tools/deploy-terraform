@@ -2,12 +2,6 @@
 # Common
 ################################################################################
 
-variable "multi_az" {
-  description = "Settings for HA"
-  type        = bool
-  # default     = true
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -20,12 +14,6 @@ variable "tags" {
   # default     = ""
 }
 
-variable "azs" {
-  description = "A list of availability zones names or ids in the region"
-  type        = list(string)
-  # default     = []
-}
-
 ################################################################################
 # Load Balancer
 ################################################################################
@@ -36,11 +24,17 @@ variable "load_balancer_type" {
 #  default     = "application"
 }
 
+variable "public_lb_subnets" {
+  description = "ID of public subnet for LB"
+  type        = list(string)
+  # default     = []
+}
+
 ################################################################################
 # Security Group
 ################################################################################
 
-variable "lb_sg_ports" {
+variable "public_lb_sg_ports" {
   description = "List of allowed ports to LB Security Group"
   type        = map(any)
   # default     = {}

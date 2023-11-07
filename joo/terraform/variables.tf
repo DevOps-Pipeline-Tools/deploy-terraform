@@ -1,9 +1,3 @@
-variable "multi_az" {
-  description = "Settings for HA"
-  type        = bool
-  # default     = true
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -40,6 +34,12 @@ variable "web_subnet_cidr" {
   # default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
+variable "private_lb_subnet_cidr" {
+  description = "The IPv4 CIDR block for the Private LB Subnets"
+  type        = list(string)
+  # default = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
 variable "was_subnet_cidr" {
   description = "The IPv4 CIDR block for the WAS Subnets"
   type        = list(string)
@@ -58,8 +58,14 @@ variable "load_balancer_type" {
 #  default     = "application"
 }
 
-variable "lb_sg_ports" {
-  description = "List of allowed ports to LB Security Group"
+variable "public_lb_sg_ports" {
+  description = "List of allowed ports to Public LB Security Group"
+  type        = map(any)
+  # default     = {}
+}
+
+variable "private_lb_sg_ports" {
+  description = "List of allowed ports to Private LB Security Group"
   type        = map(any)
   # default     = {}
 }
@@ -74,12 +80,6 @@ variable "key_name" {
   description = "The key name that should be used for the instance"
   type        = string
   # default     = null
-}
-
-variable "vpc_zone_identifier" {
-  description = "A list of subnet IDs to launch resources in. Subnets automatically determine which availability zones the group will reside. Conflicts with `availability_zones`"
-  type        = list(string)
-  default     = []
 }
 
 variable "wait_for_capacity_timeout" {

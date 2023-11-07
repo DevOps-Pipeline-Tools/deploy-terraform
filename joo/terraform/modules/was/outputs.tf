@@ -97,7 +97,7 @@ output "security_group_arn" {
 
 output "security_group_id" {
   description = "The ID of the security group"
-  value       = try(aws_security_group.was.arn, "")
+  value       = try(aws_security_group.was.id, "")
 }
 
 output "security_group_vpc_id" {

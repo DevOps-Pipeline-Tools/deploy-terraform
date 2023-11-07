@@ -2,12 +2,6 @@
 # Common
 ################################################################################
 
-variable "multi_az" {
-  description = "Settings for HA"
-  type        = bool
-  # default     = true
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -52,6 +46,16 @@ variable "public_subnet_cidr" {
 
 variable "web_subnet_cidr" {
   description = "The IPv4 CIDR block for the WEB Subnets"
+  type        = list(string)
+  # default = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+################################################################################
+# Private-LB Subnets
+################################################################################
+
+variable "private_lb_subnet_cidr" {
+  description = "The IPv4 CIDR block for the Private LB Subnets"
   type        = list(string)
   # default = ["10.0.1.0/24", "10.0.2.0/24"]
 }

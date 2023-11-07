@@ -28,10 +28,10 @@ resource "aws_autoscaling_group" "this" {
     id = aws_launch_template.db.id
   }
 
-  vpc_zone_identifier       = var.multi_az ? var.vpc_zone_identifier : [var.vpc_zone_identifier[0]]
-  min_size                  = var.multi_az ? 2 : 1 
-  max_size                  = var.multi_az ? 4 : 2
-  desired_capacity          = var.multi_az ? 2 : 1
+  vpc_zone_identifier       = var.vpc_zone_identifier
+  min_size                  = 2 
+  max_size                  = 4
+  desired_capacity          = 2
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
   health_check_type         = var.health_check_type
@@ -44,8 +44,8 @@ resource "aws_autoscaling_group" "this" {
   }
 
   tag {
-      key = "Name"
-      value   = lookup(var.tags, "Name")
+      key = keys(var.tags)[0]
+      value   = lookup(var.tags, "owner")
       propagate_at_launch     = true   
   }
 }
@@ -66,7 +66,7 @@ resource "aws_security_group" "db" {
       from_port   = ingress.value
       to_port     = ingress.value
       protocol    = "tcp"
-      cidr_blocks = var.was_sg_id
+      security_groups = [var.was_sg_id]
     }
   }
 

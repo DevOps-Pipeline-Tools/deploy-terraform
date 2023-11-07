@@ -2,12 +2,6 @@
 # Common
 ################################################################################
 
-variable "multi_az" {
-  description = "Settings for HA"
-  type        = bool
-  # default     = true
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -76,7 +70,7 @@ variable "db_sg_ports" {
 
 variable "was_sg_id" {
   description = "Security group ID of WAS for ingress targets"
-  type        = list(string)
+  type        = string
   # default     = ""
 }
 
