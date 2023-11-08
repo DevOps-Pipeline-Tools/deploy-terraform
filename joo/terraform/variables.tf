@@ -58,6 +58,12 @@ variable "load_balancer_type" {
 #  default     = "application"
 }
 
+variable "certificate_arn" {
+  description = "ARN of certificate for LB"
+  type        = string
+  # default     = ""
+}
+
 variable "public_lb_sg_ports" {
   description = "List of allowed ports to Public LB Security Group"
   type        = map(any)
@@ -68,6 +74,12 @@ variable "private_lb_sg_ports" {
   description = "List of allowed ports to Private LB Security Group"
   type        = map(any)
   # default     = {}
+}
+
+variable "public_zone_id" {
+  description = "The zone_id of the Public Route 53 Zone to assist with creating DNS records"
+  type        = string
+  # default     = ""
 }
 
 variable "instance_type" {

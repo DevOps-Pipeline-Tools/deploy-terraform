@@ -28,6 +28,20 @@ output "zone_id" {
 }
 
 ################################################################################
+# Target Group(s)
+################################################################################
+
+output "target_groups" {
+  description = "Map of target groups created and their attributes"
+  value       = aws_lb_target_group.was
+}
+
+output "target_groups_arn" {
+  description = "A ARN of target groups"
+  value       = aws_lb_target_group.was.arn
+}
+
+################################################################################
 # Security Group
 ################################################################################
 

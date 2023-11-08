@@ -12,6 +12,10 @@ resource "aws_launch_template" "was" {
 
   vpc_security_group_ids = aws_security_group.was[*].id
 
+  iam_instance_profile {
+      arn  = var.iam_instance_profile_arn
+  }
+
   tags = merge(
     { "Name" = "${var.name}-was-launch-template" },
     var.tags
@@ -34,7 +38,7 @@ resource "aws_autoscaling_group" "this" {
   desired_capacity          = 2
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
-  # target_group_arns         = [var.target_group_arns]
+  target_group_arns         = [var.target_group_arns]
   health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
 

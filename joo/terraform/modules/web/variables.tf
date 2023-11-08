@@ -30,6 +30,12 @@ variable "key_name" {
   # default     = null
 }
 
+variable "iam_instance_profile_arn" {
+  description = "ARN assigned by AWS to the instance profile"
+  type        = string
+  # default     = null
+}
+
 ################################################################################
 # Autoscaling group
 ################################################################################
@@ -49,7 +55,7 @@ variable "wait_for_capacity_timeout" {
 variable "target_group_arns" {
   description = "A set of `aws_alb_target_group` ARNs, for use with Application or Network Load Balancing"
   type        = string
-  # default     = []
+  # default     = ""
 }
 
 variable "health_check_type" {

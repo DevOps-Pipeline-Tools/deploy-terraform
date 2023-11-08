@@ -30,6 +30,12 @@ variable "public_lb_subnets" {
   # default     = []
 }
 
+variable "certificate_arn" {
+  description = "ARN of certificate for LB"
+  type        = string
+  # default     = ""
+}
+
 ################################################################################
 # Security Group
 ################################################################################

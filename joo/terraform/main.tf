@@ -26,6 +26,13 @@ output "vpc_id" {
   value = module.network.vpc_id
 }
 
+module "iam" {
+  source = "./modules/iam"
+
+  name     = var.name
+  tags     = var.tags
+}
+
 module "public_lb" {
   source = "./modules/public-lb"
 
@@ -35,6 +42,7 @@ module "public_lb" {
   load_balancer_type = var.load_balancer_type
   vpc_id = module.network.vpc_id
   public_lb_sg_ports = var.public_lb_sg_ports
+  certificate_arn = var.certificate_arn
 }
 
 output "lb_sg_id" {
@@ -52,9 +60,10 @@ module "web" {
   tags     = var.tags
   instance_type = var.instance_type
   key_name = var.key_name
+  iam_instance_profile_arn = module.iam.iam_instance_profile_arn
   vpc_zone_identifier = module.network.web_subnets
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
-  # target_group_arns = module.public_lb.arn
+  target_group_arns = module.public_lb.target_groups_arn
   health_check_type = "ELB"
   health_check_grace_period = var.health_check_grace_period
   web_sg_ports = var.web_sg_ports
@@ -78,6 +87,19 @@ module "private_lb" {
   private_lb_sg_ports = var.private_lb_sg_ports
 }
 
+module "route53" {
+  source = "./modules/route53"
+  name     = var.name
+  tags     = var.tags
+  vpc_id = module.network.vpc_id
+  public_zone_id = var.public_zone_id
+  public_lb_dns_name = module.public_lb.dns_name
+  public_lb_zone_id = module.public_lb.zone_id
+  private_lb_dns_name = module.private_lb.dns_name
+  private_lb_zone_id = module.private_lb.zone_id
+
+}
+
 module "was" {
   source = "./modules/was"
 
@@ -85,9 +107,10 @@ module "was" {
   tags     = var.tags
   instance_type = var.instance_type
   key_name = var.key_name
+  iam_instance_profile_arn = module.iam.iam_instance_profile_arn
   vpc_zone_identifier = module.network.web_subnets
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
-  # target_group_arns = module.private_lb.arn
+  target_group_arns = module.private_lb.target_groups_arn
   health_check_type = "ELB"
   health_check_grace_period = var.health_check_grace_period
   was_sg_ports = var.was_sg_ports
@@ -106,6 +129,7 @@ module "db" {
   tags     = var.tags
   instance_type = var.instance_type
   key_name = var.key_name
+  iam_instance_profile_arn = module.iam.iam_instance_profile_arn
   vpc_zone_identifier = module.network.web_subnets
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
   health_check_type = var.health_check_type

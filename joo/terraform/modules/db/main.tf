@@ -12,6 +12,10 @@ resource "aws_launch_template" "db" {
 
   vpc_security_group_ids = aws_security_group.db[*].id
 
+  iam_instance_profile {
+      arn  = var.iam_instance_profile_arn
+  }
+
   tags = merge(
     { "Name" = "${var.name}-db-launch-template}" },
     var.tags

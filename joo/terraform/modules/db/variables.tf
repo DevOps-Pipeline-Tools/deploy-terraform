@@ -30,6 +30,12 @@ variable "key_name" {
   # default     = null
 }
 
+variable "iam_instance_profile_arn" {
+  description = "ARN assigned by AWS to the instance profile"
+  type        = string
+  # default     = null
+}
+
 ################################################################################
 # Autoscaling group
 ################################################################################
