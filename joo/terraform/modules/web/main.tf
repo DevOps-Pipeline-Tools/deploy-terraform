@@ -6,7 +6,7 @@ resource "aws_launch_template" "web" {
   name          = "${var.name}-web-launch-template"
   description   = "${var.name}-web-launch-template"
   instance_type = var.instance_type
-  image_id      = data.aws_ami.amzlinux3.id
+  image_id      = data.aws_ami.ubuntu.id
   key_name      = var.key_name
   user_data     = filebase64("${path.module}/web-install.sh")
 

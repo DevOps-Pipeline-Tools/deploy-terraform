@@ -1,10 +1,10 @@
-data "aws_ami" "amzlinux3" {
+data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["099720109477"]
 
   filter {
     name   = "name"
-    values = ["al2023-ami-2023.*"]
+    values = ["amazon/ubuntu/images/*-amd64-server-*"]
   }
 
   filter {
@@ -14,9 +14,5 @@ data "aws_ami" "amzlinux3" {
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
   }
 }

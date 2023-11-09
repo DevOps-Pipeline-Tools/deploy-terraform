@@ -3,13 +3,13 @@ on:
   pull_request:
     branches: [ main ]
     paths: 
-      - 'joo/**'
-      - '.github/workflows/joo-workflow.yml'
+      - 'joo/terraform/**'
+      - '.github/workflows/deploy-infra.yml'
   push:
     branches: [ main ]
     paths: 
-      - 'joo/**'
-      - '.github/workflows/joo-workflow.yml'
+      - 'joo/terraform/**'
+      - '.github/workflows/deploy-infra.yml'
 
 jobs:
   tf_code_check: 
@@ -22,7 +22,7 @@ jobs:
     environment: joo
     defaults:
       run:
-        working-directory: ./joo
+        working-directory: ./joo/terraform
     runs-on: ubuntu-latest
     steps:
     - name: Checkout tf code in runner environment 

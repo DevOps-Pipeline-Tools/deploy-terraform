@@ -6,7 +6,7 @@ resource "aws_launch_template" "db" {
   name          = "${var.name}-db-launch-template"
   description   = "${var.name}-db-launch-template"
   instance_type = var.instance_type
-  image_id      = data.aws_ami.amzlinux3.id
+  image_id      = data.aws_ami.ubuntu.id
   key_name      = var.key_name
   user_data     = filebase64("${path.module}/db-install.sh")
 
