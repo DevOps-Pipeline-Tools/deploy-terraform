@@ -18,7 +18,7 @@ resource "aws_lb" "public" {
 ################################################################################
 
 resource "aws_lb_listener" "https" {
-  certificate_arn = var.certificate_arn
+  certificate_arn = data.aws_acm_certificate.amazon_issued.arn
   load_balancer_arn = aws_lb.public.arn
   port              = 443
   protocol          = "HTTPS"

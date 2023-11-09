@@ -33,9 +33,9 @@ resource "aws_autoscaling_group" "this" {
   }
 
   vpc_zone_identifier       = var.vpc_zone_identifier
-  min_size                  = 2
-  max_size                  = 4
-  desired_capacity          = 2
+  min_size            = var.min_size
+  max_size            = var.max_size
+  desired_capacity    = var.desired_capacity
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
   target_group_arns         = [var.target_group_arns]

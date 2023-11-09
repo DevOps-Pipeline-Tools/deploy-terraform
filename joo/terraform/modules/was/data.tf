@@ -4,15 +4,21 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["amazon/ubuntu/images/*-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/*"]
   }
 
   filter {
     name   = "root-device-type"
     values = ["ebs"]
   }
+
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
+  }
+
+  filter {
+    name = "architecture"
+    values = [ "x86_64" ]
   }
 }

@@ -58,12 +58,6 @@ variable "load_balancer_type" {
 #  default     = "application"
 }
 
-variable "certificate_arn" {
-  description = "ARN of certificate for LB"
-  type        = string
-  # default     = ""
-}
-
 variable "public_lb_sg_ports" {
   description = "List of allowed ports to Public LB Security Group"
   type        = map(any)
@@ -74,12 +68,6 @@ variable "private_lb_sg_ports" {
   description = "List of allowed ports to Private LB Security Group"
   type        = map(any)
   # default     = {}
-}
-
-variable "public_zone_id" {
-  description = "The zone_id of the Public Route 53 Zone to assist with creating DNS records"
-  type        = string
-  # default     = ""
 }
 
 variable "instance_type" {
@@ -108,6 +96,24 @@ variable "health_check_type" {
 
 variable "health_check_grace_period" {
   description = "Time (in seconds) after instance comes into service before checking health"
+  type        = number
+  # default     = null
+}
+
+variable "min_size" {
+  description = "The minimum size of the autoscaling group"
+  type        = number
+  # default     = null
+}
+
+variable "max_size" {
+  description = "The maximum size of the autoscaling group"
+  type        = number
+  # default     = null
+}
+
+variable "desired_capacity" {
+  description = "The number of Amazon EC2 instances that should be running in the autoscaling group"
   type        = number
   # default     = null
 }

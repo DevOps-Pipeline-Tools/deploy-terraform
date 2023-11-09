@@ -64,6 +64,24 @@ variable "health_check_grace_period" {
   # default     = null
 }
 
+variable "min_size" {
+  description = "The minimum size of the autoscaling group"
+  type        = number
+  # default     = null
+}
+
+variable "max_size" {
+  description = "The maximum size of the autoscaling group"
+  type        = number
+  # default     = null
+}
+
+variable "desired_capacity" {
+  description = "The number of Amazon EC2 instances that should be running in the autoscaling group"
+  type        = number
+  # default     = null
+}
+
 ################################################################################
 # Security Group
 ################################################################################

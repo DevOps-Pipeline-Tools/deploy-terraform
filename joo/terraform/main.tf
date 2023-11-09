@@ -42,7 +42,6 @@ module "public_lb" {
   load_balancer_type = var.load_balancer_type
   vpc_id = module.network.vpc_id
   public_lb_sg_ports = var.public_lb_sg_ports
-  certificate_arn = var.certificate_arn
 }
 
 output "lb_sg_id" {
@@ -66,6 +65,9 @@ module "web" {
   target_group_arns = module.public_lb.target_groups_arn
   health_check_type = "ELB"
   health_check_grace_period = var.health_check_grace_period
+  min_size = var.min_size
+  max_size = var.max_size
+  desired_capacity = var.desired_capacity
   web_sg_ports = var.web_sg_ports
   public_lb_sg_id = module.public_lb.security_group_id
   vpc_id = module.network.vpc_id
@@ -92,7 +94,6 @@ module "route53" {
   name     = var.name
   tags     = var.tags
   vpc_id = module.network.vpc_id
-  public_zone_id = var.public_zone_id
   public_lb_dns_name = module.public_lb.dns_name
   public_lb_zone_id = module.public_lb.zone_id
   private_lb_dns_name = module.private_lb.dns_name
@@ -113,6 +114,9 @@ module "was" {
   target_group_arns = module.private_lb.target_groups_arn
   health_check_type = "ELB"
   health_check_grace_period = var.health_check_grace_period
+  min_size = var.min_size
+  max_size = var.max_size
+  desired_capacity = var.desired_capacity
   was_sg_ports = var.was_sg_ports
   private_lb_sg_id = module.private_lb.security_group_id
   vpc_id = module.network.vpc_id
@@ -134,6 +138,9 @@ module "db" {
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
   health_check_type = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
+  min_size = var.min_size
+  max_size = var.max_size
+  desired_capacity = var.desired_capacity
   db_sg_ports = var.db_sg_ports
   was_sg_id = module.was.security_group_id
   vpc_id = module.network.vpc_id

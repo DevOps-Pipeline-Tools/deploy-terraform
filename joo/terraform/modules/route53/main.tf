@@ -21,7 +21,7 @@ resource "aws_route53_zone" "private" {
 ################################################################################
 
 resource "aws_route53_record" "public_lb" {
-  zone_id = var.public_zone_id
+  zone_id = data.aws_route53_zone.selected.zone_id
   name    = "test"
   type    = "CNAME"
 

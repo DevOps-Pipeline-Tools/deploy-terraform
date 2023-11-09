@@ -18,12 +18,6 @@ variable "tags" {
 # Route53 Record(s)
 ################################################################################
 
-variable "public_zone_id" {
-  description = "The zone_id of the Public Route 53 Zone to assist with creating DNS records"
-  type        = string
-  # default     = ""
-}
-
 variable "public_lb_dns_name" {
   description = "The DNS name of the Public LB"
   type        = string
