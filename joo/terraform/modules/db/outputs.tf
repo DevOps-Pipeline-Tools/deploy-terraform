@@ -1,121 +1,100 @@
-################################################################################
-# Launch template
-################################################################################
+#########################################
+# RDS
+#########################################
 
-output "launch_template_id" {
-  description = "The ID of the launch template"
-  value       = try(aws_launch_template.db.id, null)
+output "db_instance_address" {
+  description = "The address of the RDS instance"
+  value       = try(aws_db_instance.this.address, null)
 }
 
-output "launch_template_arn" {
-  description = "The ARN of the launch template"
-  value       = try(aws_launch_template.db.arn, null)
+output "db_instance_arn" {
+  description = "The ARN of the RDS instance"
+  value       = try(aws_db_instance.this.arn, null)
 }
 
-output "launch_template_name" {
-  description = "The name of the launch template"
-  value       = try(aws_launch_template.db.name, null)
+output "db_instance_availability_zone" {
+  description = "The availability zone of the RDS instance"
+  value       = try(aws_db_instance.this.availability_zone, null)
 }
 
-output "launch_template_default_version" {
-  description = "The default version of the launch template"
-  value       = try(aws_launch_template.db.default_version, null)
+output "db_instance_endpoint" {
+  description = "The connection endpoint"
+  value       = try(aws_db_instance.this.endpoint, null)
 }
 
-################################################################################
-# Autoscaling group
-################################################################################
-
-output "autoscaling_group_id" {
-  description = "The autoscaling group id"
-  value       = try(aws_autoscaling_group.this.id, null)
+output "db_listener_endpoint" {
+  description = "Specifies the listener connection endpoint for SQL Server Always On"
+  value       = try(aws_db_instance.this.listener_endpoint, null)
 }
 
-output "autoscaling_group_name" {
-  description = "The autoscaling group name"
-  value       = try(aws_autoscaling_group.this.name, null)
+output "db_instance_engine" {
+  description = "The database engine"
+  value       = try(aws_db_instance.this.engine, null)
 }
 
-output "autoscaling_group_arn" {
-  description = "The ARN for this AutoScaling Group"
-  value       = try(aws_autoscaling_group.this.arn, null)
+output "db_instance_engine_version_actual" {
+  description = "The running version of the database"
+  value       = try(aws_db_instance.this.engine_version_actual, null)
 }
 
-output "autoscaling_group_min_size" {
-  description = "The minimum size of the autoscale group"
-  value       = try(aws_autoscaling_group.this.min_size, null)
+output "db_instance_hosted_zone_id" {
+  description = "The canonical hosted zone ID of the DB instance (to be used in a Route 53 Alias record)"
+  value       = try(aws_db_instance.this.hosted_zone_id, null)
 }
 
-output "autoscaling_group_max_size" {
-  description = "The maximum size of the autoscale group"
-  value       = try(aws_autoscaling_group.this.max_size, null)
+output "db_instance_identifier" {
+  description = "The RDS instance identifier"
+  value       = try(aws_db_instance.this.identifier, null)
 }
 
-output "autoscaling_group_desired_capacity" {
-  description = "The number of Amazon EC2 instances that should be running in the group"
-  value       = try(aws_autoscaling_group.this.desired_capacity, null)
+output "db_instance_resource_id" {
+  description = "The RDS Resource ID of this instance"
+  value       = try(aws_db_instance.this.resource_id, null)
 }
 
-output "autoscaling_group_default_cooldown" {
-  description = "Time between a scaling activity and the succeeding scaling activity"
-  value       = try(aws_autoscaling_group.this.default_cooldown, null)
+output "db_instance_status" {
+  description = "The RDS instance status"
+  value       = try(aws_db_instance.this.status, null)
 }
 
-output "autoscaling_group_health_check_grace_period" {
-  description = "Time after instance comes into service before checking health"
-  value       = try(aws_autoscaling_group.this.health_check_grace_period, null)
+output "db_instance_name" {
+  description = "The database name"
+  value       = try(aws_db_instance.this.db_name, null)
 }
 
-output "autoscaling_group_health_check_type" {
-  description = "EC2 or ELB. Controls how health checking is done"
-  value       = try(aws_autoscaling_group.this.health_check_type, null)
+output "db_instance_username" {
+  description = "The master username for the database"
+  value       = try(aws_db_instance.this.username, null)
+  sensitive   = true
 }
 
-output "autoscaling_group_availability_zones" {
-  description = "The availability zones of the autoscale group"
-  value       = try(aws_autoscaling_group.this.availability_zones, [])
+output "db_instance_port" {
+  description = "The database port"
+  value       = try(aws_db_instance.this.port, null)
 }
 
-output "autoscaling_group_load_balancers" {
-  description = "The load balancer names associated with the autoscaling group"
-  value       = try(aws_autoscaling_group.this.load_balancers, [])
+output "db_instance_ca_cert_identifier" {
+  description = "Specifies the identifier of the CA certificate for the DB instance"
+  value       = try(aws_db_instance.this.ca_cert_identifier, null)
 }
 
-output "autoscaling_group_target_group_arns" {
-  description = "List of Target Group ARNs that apply to this AutoScaling Group"
-  value       = try(aws_autoscaling_group.this.target_group_arns, [])
+output "db_instance_domain" {
+  description = "The ID of the Directory Service Active Directory domain the instance is joined to"
+  value       = try(aws_db_instance.this.domain, null)
 }
 
-################################################################################
-# Security Group
-################################################################################
-
-output "security_group_arn" {
-  description = "The ARN of the security group"
-  value       = try(aws_security_group.db.arn, "")
+output "db_instance_domain_iam_role_name" {
+  description = "The name of the IAM role to be used when making API calls to the Directory Service"
+  value       = try(aws_db_instance.this.domain_iam_role_name, null)
 }
 
-output "security_group_id" {
-  description = "The ID of the security group"
-  value       = try(aws_security_group.db.id, "")
+
+output "db_subnet_group_id" {
+  description = "The db subnet group name"
+  value       = try(aws_db_subnet_group.this.id, null)
 }
 
-output "security_group_vpc_id" {
-  description = "The VPC ID"
-  value       = try(aws_security_group.db.vpc_id, "")
-}
-
-output "security_group_owner_id" {
-  description = "The owner ID"
-  value       = try(aws_security_group.db.owner_id, "")
-}
-
-output "security_group_name" {
-  description = "The name of the security group"
-  value       = try(aws_security_group.db.name, "")
-}
-
-output "security_group_description" {
-  description = "The description of the security group"
-  value       = try(aws_security_group.db.description, "")
+output "db_subnet_group_arn" {
+  description = "The ARN of the db subnet group"
+  value       = try(aws_db_subnet_group.this.arn, null)
 }

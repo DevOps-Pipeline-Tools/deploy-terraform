@@ -1,24 +1,6 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  owners      = ["099720109477"]
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/*"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name = "architecture"
-    values = [ "x86_64" ]
-  }
+data "aws_secretsmanager_secret" "by-name" {
+  name = "db-secret"
+}
+data "aws_secretsmanager_secret_version" "db-secret" {
+  secret_id = data.aws_secretsmanager_secret.by-name.id
 }

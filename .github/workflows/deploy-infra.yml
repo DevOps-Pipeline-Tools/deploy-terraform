@@ -1,11 +1,10 @@
 name: Terraform AWS Workflow
 on:
-  pull_request:
+  workflow_run:
+    workflows: ["Build Nginx Image to AWS ECR", "Build App Image to AWS ECR"]
+    types: [completed]
     branches: [ main ]
-    paths: 
-      - 'joo/terraform/**'
-      - '.github/workflows/deploy-infra.yml'
-  push:
+  pull_request:
     branches: [ main ]
     paths: 
       - 'joo/terraform/**'
@@ -34,37 +33,71 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE }}
         aws-region: ap-northeast-2
 
-    - name: Setup Terragrunt
-      run: |
-        mkdir bin
-        wget -O bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/$tg_version/terragrunt_linux_amd64
-        chmod +x bin/terragrunt
-        echo "$GITHUB_WORKSPACE/joo/bin" >> $GITHUB_PATH
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: "1.6.2"
 
-    - name: Terragrunt hclfmt
-      id: hclfmt
-      run: terragrunt hclfmt --terragrunt-check --terragrunt-diff
-      continue-on-error: true
+    - name: Terraform init
+      id: init
+      run: terraform init
 
     - name: Terraform fmt
       id: fmt
-      run: terraform fmt -check --recursive
+      run: terraform fmt -check
       continue-on-error: true
 
-    - name: Terragrunt validate
+    - name: Terraform validate
       id: validate
-      run: terragrunt run-all validate --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"
+      run: terraform validate -no-color
 
-    - name: Terragrunt plan
+    - name: Terraform plan
       id: plan
-      run: terragrunt run-all plan --terragrunt-exclude-dir "**/.terragrunt-cache/**/*"
+      if: github.event_name == 'pull_request'
+      run: terraform plan -no-color
+      
+    - name: Terraform Plan Output
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}" 
+        CHECKOV: "checkov\n${{ env.CHECKOV_RESULTS }}" 
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+         const output = `## 테라폼 구축 계획
+          #### terraform init ⚙️\`${{ steps.init.outcome }}\`
+          #### terraform fmt 🖌\`${{ steps.fmt.outcome }}\`
+          #### terraform validate 🤖\`${{ steps.validate.outcome }}\`
+          <details><summary>문법 검사 결과</summary>
 
-    - name: Terragrunt apply
-      id: apply
-      if: github.event_name == 'push'
-      run: terragrunt run-all apply --terragrunt-exclude-dir "**/.terragrunt-cache/**/*" --terragrunt-non-interactive
+          \`\`\`\n
+          ${{ steps.validate.outputs.stdout }}
+          \`\`\`
 
-    - name: Terragrunt destroy
-      id: destroy
+          </details>
+
+          #### terraform plan 📖\`${{ steps.plan.outcome }}\`
+
+          <details><summary>테라폼 구축 계획</summary>
+
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+
+          **위의 내용으로 테라폼 배포를 요청합니다!**
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Apply
       if: github.event_name == 'push'
-      run: terragrunt run-all destroy --terragrunt-exclude-dir "**/.terragrunt-cache/**/*" --terragrunt-non-interactive
+      run: terraform apply -auto-approve

@@ -1,14 +1,9 @@
 name: Build Nginx Image to AWS ECR
 on:
-  pull_request:
-    branches: [ main ]
-    paths: 
-      - 'joo/build-image/nginx'
-      - '.github/workflows/build-nginx.yml'
   push:
     branches: [ main ]
     paths: 
-      - 'joo/build-image/nginx'
+      - 'joo/build-image/nginx/*'
       - '.github/workflows/build-nginx.yml'
 
 jobs:
@@ -43,7 +38,7 @@ jobs:
         REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
         REGISTRY_ALIAS: ${{ secrets.ECR_ALIAS }}
         REPOSITORY: nginx
-        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_TAG: 0.1
       run: |
         docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
         docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG

@@ -1,57 +1,38 @@
-################################################################################
-# Launch template
-################################################################################
+#########################################
+# RDS
+#########################################
 
-resource "aws_launch_template" "db" {
-  name          = "${var.name}-db-launch-template"
-  description   = "${var.name}-db-launch-template"
-  instance_type = var.instance_type
-  image_id      = data.aws_ami.ubuntu.id
-  key_name      = var.key_name
-  user_data     = filebase64("${path.module}/db-install.sh")
-
-  vpc_security_group_ids = aws_security_group.db[*].id
-
-  iam_instance_profile {
-      arn  = var.iam_instance_profile_arn
-  }
+resource "aws_db_instance" "this" {
+  identifier             = var.name
+  engine                 = "postgres"
+  engine_version         = "15.3"
+  instance_class         = var.instance_class
+  allocated_storage      = var.allocated_storage
+  storage_encrypted      = true
+  db_name                = "postgres"
+  username               = jsondecode(data.aws_secretsmanager_secret_version.db-secret.secret_string)["username"]
+  password               = jsondecode(data.aws_secretsmanager_secret_version.db-secret.secret_string)["password"]
+  port                   = "5432"
+  vpc_security_group_ids = [aws_security_group.db.id]
+  db_subnet_group_name   = aws_db_subnet_group.this.name
+  skip_final_snapshot    = true
+  multi_az               = var.multi_az
 
   tags = merge(
-    { "Name" = "${var.name}-db-launch-template}" },
+    { "Name" = "${var.name}-postgres" },
     var.tags
   )
 }
-################################################################################
-# Autoscaling group
-################################################################################
 
-resource "aws_autoscaling_group" "this" {
-  name = "${var.name}-db-asg"
+resource "aws_db_subnet_group" "this" {
+  name        = "${var.name}-var.db-subnet-group"
+  description = "${var.name}-var.db-subnet-group"
+  subnet_ids  = var.subnet_ids
 
-  launch_template {
-    id = aws_launch_template.db.id
-  }
-
-  vpc_zone_identifier       = var.vpc_zone_identifier
-  min_size            = var.min_size
-  max_size            = var.max_size
-  desired_capacity    = var.desired_capacity
-  wait_for_capacity_timeout = var.wait_for_capacity_timeout
-
-  health_check_type         = var.health_check_type
-  health_check_grace_period = var.health_check_grace_period
-
-  tag {
-      key = "Name"
-      value   = "${var.name}-db"
-      propagate_at_launch     = true   
-  }
-
-  tag {
-      key = keys(var.tags)[0]
-      value   = lookup(var.tags, "owner")
-      propagate_at_launch     = true   
-  }
+  tags = merge(
+    { "Name" = "${var.name}-db-subnet-group" },
+    var.tags
+  )
 }
 
 ################################################################################
@@ -66,10 +47,10 @@ resource "aws_security_group" "db" {
   dynamic "ingress" {
     for_each = var.db_sg_ports
     content {
-      description = "Allow ${ingress.key}"
-      from_port   = ingress.value
-      to_port     = ingress.value
-      protocol    = "tcp"
+      description     = "Allow ${ingress.key}"
+      from_port       = ingress.value
+      to_port         = ingress.value
+      protocol        = "tcp"
       security_groups = [var.was_sg_id]
     }
   }

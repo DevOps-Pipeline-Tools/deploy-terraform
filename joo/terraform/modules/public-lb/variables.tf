@@ -21,7 +21,7 @@ variable "tags" {
 variable "load_balancer_type" {
   description = "The type of load balancer to create. Possible values are `application`, `gateway`, or `network`. The default value is `application`"
   type        = string
-#  default     = "application"
+  #  default     = "application"
 }
 
 variable "public_lb_subnets" {

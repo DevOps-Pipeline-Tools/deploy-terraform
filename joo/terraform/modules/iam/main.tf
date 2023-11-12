@@ -28,8 +28,8 @@ resource "aws_iam_role" "ec2_role" {
 resource "aws_iam_instance_profile" "this" {
   role = aws_iam_role.ec2_role.name
 
-  name        = "EC2InstanceProfileECR"
-  path        = "/"
+  name = "EC2InstanceProfileECR"
+  path = "/"
 
   tags = merge(
     { "Name" = "${var.name}-instance-profile-ecr" },
@@ -43,32 +43,30 @@ resource "aws_iam_policy" "ecr_policy" {
   description = "ecr policy"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ecr:GetAuthorizationToken",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:GetRepositoryPolicy",
-                "ecr:DescribeRepositories",
-                "ecr:ListImages",
-                "ecr:DescribeImages",
-                "ecr:BatchGetImage",
-                "ecr:GetLifecyclePolicy",
-                "ecr:GetLifecyclePolicyPreview",
-                "ecr:ListTagsForResource",
-                "ecr:DescribeImageScanFindings",
-                "ecr:InitiateLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:CompleteLayerUpload",
-                "ecr:PutImage"
-            ],
-            "Resource": "*"
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ecr-public:GetAuthorizationToken",
+          "sts:GetServiceBearerToken",
+          "ecr-public:BatchCheckLayerAvailability",
+          "ecr-public:GetRepositoryPolicy",
+          "ecr-public:DescribeRepositories",
+          "ecr-public:DescribeRegistries",
+          "ecr-public:DescribeImages",
+          "ecr-public:DescribeImageTags",
+          "ecr-public:GetRepositoryCatalogData",
+          "ecr-public:GetRegistryCatalogData",
+          "ecr-public:InitiateLayerUpload",
+          "ecr-public:UploadLayerPart",
+          "ecr-public:CompleteLayerUpload",
+          "ecr-public:PutImage"
+        ],
+        "Resource" : "*"
+      }
     ]
-})
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_role" {

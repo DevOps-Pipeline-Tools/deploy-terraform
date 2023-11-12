@@ -3,10 +3,10 @@
 ################################################################################
 
 resource "aws_lb" "public" {
-  load_balancer_type                          = var.load_balancer_type
-  name                                        = "public-lb"
-  security_groups                             = [aws_security_group.public_lb.id]
-  subnets                    = var.public_lb_subnets
+  load_balancer_type = var.load_balancer_type
+  name               = "${var.name}-public-lb"
+  security_groups    = [aws_security_group.public_lb.id]
+  subnets            = var.public_lb_subnets
   tags = merge(
     { "Name" = "${var.name}-public-lb" },
     var.tags
@@ -18,7 +18,7 @@ resource "aws_lb" "public" {
 ################################################################################
 
 resource "aws_lb_listener" "https" {
-  certificate_arn = data.aws_acm_certificate.amazon_issued.arn
+  certificate_arn   = data.aws_acm_certificate.amazon_issued.arn
   load_balancer_arn = aws_lb.public.arn
   port              = 443
   protocol          = "HTTPS"
@@ -41,14 +41,20 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web.arn
   }
+
+  # default_action {
+  #   type = "redirect"
+  #   }
+
+    # redirect {
+    #   port        = "443"
+    #   protocol    = "HTTPS"
+    #   status_code = "HTTP_301"
+    # }
+  # }
   tags = merge(
     { "Name" = "${var.name}-public-lb-http-Listener" },
     var.tags
@@ -61,11 +67,11 @@ resource "aws_lb_listener" "http" {
 
 resource "aws_lb_target_group" "web" {
 
-  name                               = "web-TG"
-  port                               = 80
-  protocol                           = "HTTP"
+  name     = "web-TG"
+  port     = 80
+  protocol = "HTTP"
 
-  vpc_id      = var.vpc_id
+  vpc_id = var.vpc_id
 
   tags = merge(
     { "Name" = "${var.name}-web-TG" },

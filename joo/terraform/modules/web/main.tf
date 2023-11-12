@@ -13,7 +13,7 @@ resource "aws_launch_template" "web" {
   vpc_security_group_ids = aws_security_group.web[*].id
 
   iam_instance_profile {
-      arn  = var.iam_instance_profile_arn
+    arn = var.iam_instance_profile_arn
   }
 
   tags = merge(
@@ -44,15 +44,15 @@ resource "aws_autoscaling_group" "this" {
   health_check_grace_period = var.health_check_grace_period
 
   tag {
-      key = "Name"
-      value   = "${var.name}-web"
-      propagate_at_launch     = true   
+    key                 = "Name"
+    value               = "${var.name}-web"
+    propagate_at_launch = true
   }
 
   tag {
-      key = keys(var.tags)[0]
-      value   = lookup(var.tags, "owner")
-      propagate_at_launch     = true   
+    key                 = keys(var.tags)[0]
+    value               = lookup(var.tags, "owner")
+    propagate_at_launch = true
   }
 }
 
@@ -68,10 +68,10 @@ resource "aws_security_group" "web" {
   dynamic "ingress" {
     for_each = var.web_sg_ports
     content {
-      description = "Allow ${ingress.key}"
-      from_port   = ingress.value
-      to_port     = ingress.value
-      protocol    = "tcp"
+      description     = "Allow ${ingress.key}"
+      from_port       = ingress.value
+      to_port         = ingress.value
+      protocol        = "tcp"
       security_groups = [var.public_lb_sg_id]
     }
   }

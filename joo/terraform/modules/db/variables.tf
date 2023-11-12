@@ -14,72 +14,38 @@ variable "tags" {
   # default     = ""
 }
 
-################################################################################
-# Launch template
-################################################################################
+#########################################
+# RDS
+#########################################
 
-variable "instance_type" {
-  description = "The type of the instance"
+variable "engine" {
+  description = "The database engine to use"
   type        = string
-  # default     = ""
+  default     = null
 }
 
-variable "key_name" {
-  description = "The key name that should be used for the instance"
+variable "engine_version" {
+  description = "The engine version to use"
   type        = string
-  # default     = null
+  default     = null
 }
 
-variable "iam_instance_profile_arn" {
-  description = "ARN assigned by AWS to the instance profile"
-  type        = string
-  # default     = null
-}
-
-################################################################################
-# Autoscaling group
-################################################################################
-
-variable "vpc_zone_identifier" {
-  description = "A list of subnet IDs to launch resources in. Subnets automatically determine which availability zones the group will reside. Conflicts with `availability_zones`"
-  type        = list(string)
-  # default     = null
-}
-
-variable "wait_for_capacity_timeout" {
-  description = "A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. (See also Waiting for Capacity below.) Setting this to '0' causes Terraform to skip all Capacity Waiting behavior."
+variable "instance_class" {
+  description = "The instance type of the RDS instance"
   type        = string
   # default     = null
 }
 
-variable "health_check_type" {
-  description = "`EC2` or `ELB`. Controls how health checking is done"
-  type        = string
-  # default     = null
-}
-
-variable "health_check_grace_period" {
-  description = "Time (in seconds) after instance comes into service before checking health"
+variable "allocated_storage" {
+  description = "The allocated storage in gigabytes"
   type        = number
   # default     = null
 }
 
-variable "min_size" {
-  description = "The minimum size of the autoscaling group"
-  type        = number
-  # default     = null
-}
-
-variable "max_size" {
-  description = "The maximum size of the autoscaling group"
-  type        = number
-  # default     = null
-}
-
-variable "desired_capacity" {
-  description = "The number of Amazon EC2 instances that should be running in the autoscaling group"
-  type        = number
-  # default     = null
+variable "multi_az" {
+  description = "Specifies if the RDS instance is multi-AZ"
+  type        = bool
+  # default     = false
 }
 
 ################################################################################
@@ -98,6 +64,12 @@ variable "was_sg_id" {
   # default     = ""
 }
 
+variable "subnet_ids" {
+  description = "A list of VPC subnet IDs"
+  type        = list(string)
+  # default     = []
+}
+
 ################################################################################
 # Dependencies
 ################################################################################
@@ -107,4 +79,3 @@ variable "vpc_id" {
   type        = string
   # default     = ""
 }
-

@@ -22,24 +22,36 @@ resource "aws_route53_zone" "private" {
 
 resource "aws_route53_record" "public_lb" {
   zone_id = data.aws_route53_zone.selected.zone_id
-  name    = "test"
-  type    = "CNAME"
+  name    = "app"
+  type    = "A"
 
   alias {
     name                   = var.public_lb_dns_name
-    zone_id                = var.public_lb_zone_id
+    zone_id                = data.aws_lb_hosted_zone_id.main.id
     evaluate_target_health = true
   }
 }
 
 resource "aws_route53_record" "private_lb" {
   zone_id = aws_route53_zone.private.zone_id
-  name    = "test"
-  type    = "CNAME"
+  name    = "lb"
+  type    = "A"
 
   alias {
     name                   = var.private_lb_dns_name
-    zone_id                = var.private_lb_zone_id
+    zone_id                = data.aws_lb_hosted_zone_id.main.id
     evaluate_target_health = true
   }
 }
+
+# resource "aws_route53_record" "db" {
+#   zone_id = aws_route53_zone.private.zone_id
+#   name    = "db"
+#   type    = "CNAME"
+
+#   alias {
+#     name                   = var.db_dns_name
+#     zone_id                = var.db_zone_id
+#     evaluate_target_health = true
+#   }
+# }

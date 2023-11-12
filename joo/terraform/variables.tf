@@ -55,7 +55,7 @@ variable "db_subnet_cidr" {
 variable "load_balancer_type" {
   description = "The type of load balancer to create. Possible values are `application`, `gateway`, or `network`. The default value is `application`"
   type        = string
-#  default     = "application"
+  #  default     = "application"
 }
 
 variable "public_lb_sg_ports" {
@@ -134,4 +134,34 @@ variable "db_sg_ports" {
   description = "List of allowed ports to DB Security Group"
   type        = map(any)
   # default     = {}
+}
+
+variable "engine" {
+  description = "The database engine to use"
+  type        = string
+  default     = null
+}
+
+variable "engine_version" {
+  description = "The engine version to use"
+  type        = string
+  default     = null
+}
+
+variable "instance_class" {
+  description = "The instance type of the RDS instance"
+  type        = string
+  # default     = null
+}
+
+variable "multi_az" {
+  description = "Specifies if the RDS instance is multi-AZ"
+  type        = bool
+  # default     = false
+}
+
+variable "allocated_storage" {
+  description = "The allocated storage in gigabytes"
+  type        = number
+  # default     = null
 }

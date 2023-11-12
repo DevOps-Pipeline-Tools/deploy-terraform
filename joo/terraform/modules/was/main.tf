@@ -13,7 +13,7 @@ resource "aws_launch_template" "was" {
   vpc_security_group_ids = aws_security_group.was[*].id
 
   iam_instance_profile {
-      arn  = var.iam_instance_profile_arn
+    arn = var.iam_instance_profile_arn
   }
 
   tags = merge(
@@ -33,9 +33,9 @@ resource "aws_autoscaling_group" "this" {
   }
 
   vpc_zone_identifier       = var.vpc_zone_identifier
-  min_size            = var.min_size
-  max_size            = var.max_size
-  desired_capacity    = var.desired_capacity
+  min_size                  = var.min_size
+  max_size                  = var.max_size
+  desired_capacity          = var.desired_capacity
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
   target_group_arns         = [var.target_group_arns]
@@ -43,15 +43,15 @@ resource "aws_autoscaling_group" "this" {
   health_check_grace_period = var.health_check_grace_period
 
   tag {
-      key = "Name"
-      value   = "${var.name}-was"
-      propagate_at_launch     = true   
+    key                 = "Name"
+    value               = "${var.name}-was"
+    propagate_at_launch = true
   }
 
   tag {
-      key = keys(var.tags)[0]
-      value   = lookup(var.tags, "owner")
-      propagate_at_launch     = true   
+    key                 = keys(var.tags)[0]
+    value               = lookup(var.tags, "owner")
+    propagate_at_launch = true
   }
 }
 
@@ -67,10 +67,10 @@ resource "aws_security_group" "was" {
   dynamic "ingress" {
     for_each = var.was_sg_ports
     content {
-      description = "Allow ${ingress.key}"
-      from_port   = ingress.value
-      to_port     = ingress.value
-      protocol    = "tcp"
+      description     = "Allow ${ingress.key}"
+      from_port       = ingress.value
+      to_port         = ingress.value
+      protocol        = "tcp"
       security_groups = [var.private_lb_sg_id]
     }
   }
