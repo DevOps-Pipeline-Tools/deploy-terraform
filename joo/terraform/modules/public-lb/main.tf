@@ -45,16 +45,16 @@ resource "aws_lb_listener" "http" {
     target_group_arn = aws_lb_target_group.web.arn
   }
 
-  # default_action {
-  #   type = "redirect"
-  #   }
+  default_action {
+    type = "redirect"
+    }
 
-  # redirect {
-  #   port        = "443"
-  #   protocol    = "HTTPS"
-  #   status_code = "HTTP_301"
-  # }
-  # }
+  redirect {
+    port        = "443"
+    protocol    = "HTTPS"
+    status_code = "HTTP_301"
+  }
+
   tags = merge(
     { "Name" = "${var.name}-public-lb-http-Listener" },
     var.tags

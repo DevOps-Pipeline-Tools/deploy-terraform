@@ -23,12 +23,12 @@ db_subnet_cidr         = ["10.0.80.0/24", "10.0.90.0/24"]
 
 load_balancer_type = "application"
 public_lb_sg_ports = {
-  http  = "80"
+  # http  = "80"
   https = "443"
 }
 
 private_lb_sg_ports = {
-  app = "8000"
+  app = "80"
 }
 
 ################################################################################
