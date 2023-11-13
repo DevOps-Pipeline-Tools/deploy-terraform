@@ -1,8 +1,6 @@
 name: Terraform AWS Workflow
 on:
-  workflow_run:
-    workflows: ["Build Nginx Image to AWS ECR", "Build App Image to AWS ECR"]
-    types: [completed]
+  push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
