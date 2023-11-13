@@ -63,7 +63,7 @@ module "web" {
   vpc_zone_identifier       = module.network.web_subnets
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
   target_group_arns         = module.public_lb.target_groups_arn
-  health_check_type         = var.health_check_type 
+  health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
   min_size                  = var.min_size
   max_size                  = var.max_size
@@ -98,8 +98,6 @@ module "route53" {
   public_lb_zone_id   = module.public_lb.zone_id
   private_lb_dns_name = module.private_lb.dns_name
   private_lb_zone_id  = module.private_lb.zone_id
-  db_dns_name         = module.db.db_instance_endpoint
-  db_zone_id          = module.db.db_instance_hosted_zone_id
 }
 
 module "was" {
@@ -113,7 +111,7 @@ module "was" {
   vpc_zone_identifier       = module.network.web_subnets
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
   target_group_arns         = module.private_lb.target_groups_arn
-  health_check_type         = var.health_check_type 
+  health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
   min_size                  = var.min_size
   max_size                  = var.max_size

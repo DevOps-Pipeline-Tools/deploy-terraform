@@ -42,18 +42,6 @@ variable "private_lb_zone_id" {
   # default     = ""
 }
 
-variable "db_dns_name" {
-  description = "The DNS name of the DB"
-  type        = string
-  # default     = ""
-}
-
-variable "db_zone_id" {
-  description = "The zone_id of the DB to assist with creating DNS records"
-  type        = string
-  # default     = ""
-}
-
 ################################################################################
 # Dependencies
 ################################################################################

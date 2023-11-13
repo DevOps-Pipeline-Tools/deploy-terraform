@@ -43,15 +43,3 @@ resource "aws_route53_record" "private_lb" {
     evaluate_target_health = true
   }
 }
-
-# resource "aws_route53_record" "db" {
-#   zone_id = aws_route53_zone.private.zone_id
-#   name    = "db"
-#   type    = "CNAME"
-
-#   alias {
-#     name                   = var.db_dns_name
-#     zone_id                = var.db_zone_id
-#     evaluate_target_health = true
-#   }
-# }
