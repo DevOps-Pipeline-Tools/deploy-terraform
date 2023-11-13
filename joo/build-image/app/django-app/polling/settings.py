@@ -35,6 +35,12 @@ y="10.0.30."
 z="10.0.40."
 v="10.0.50."
 
+for i in range(256):
+    ALLOWED_HOSTS.append(x+str(i))
+    ALLOWED_HOSTS.append(y+str(i))
+    ALLOWED_HOSTS.append(z+str(i))
+    ALLOWED_HOSTS.append(v+str(i))
+
 # Application definition
 
 INSTALLED_APPS = [
