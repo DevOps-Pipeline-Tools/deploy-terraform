@@ -82,8 +82,8 @@ jobs:
     - name: PR Comment
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
-      env:
-        # INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
+      # env:
+      #   INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -97,8 +97,6 @@ jobs:
           \`\`\`\n
           ${{ steps.validate.outputs.stdout }}
           \`\`\`
-
-          </details>
 
           </details>
 
