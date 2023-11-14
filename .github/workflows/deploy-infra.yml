@@ -62,7 +62,7 @@ jobs:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: | #javascript code
+        script: |
          const output = `## 테라폼 구축 계획
           #### terraform init ⚙️\`${{ steps.init.outcome }}\`
           #### terraform fmt 🖌\`${{ steps.fmt.outcome }}\`
