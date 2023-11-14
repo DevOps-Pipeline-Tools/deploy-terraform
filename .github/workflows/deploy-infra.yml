@@ -81,7 +81,7 @@ jobs:
     - uses: kishaningithub/setup-tf-summarize@v1
     - name: summary in tree format
       id: summary
-      run: tf-summarize -tree plan.json
+      run: tf-summarize -json tfplan.binary
       
     - name: PR Comment
       uses: actions/github-script@v6
