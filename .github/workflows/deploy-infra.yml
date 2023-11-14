@@ -78,7 +78,6 @@ jobs:
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
-        SUMMARY: "tf-summary\n${{ steps.summary.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
