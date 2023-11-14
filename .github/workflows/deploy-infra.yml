@@ -71,7 +71,7 @@ jobs:
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        # PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -83,12 +83,6 @@ jobs:
           <details><summary>문법 검사 결과</summary>
           \`\`\`\n
           ${{ steps.validate.outputs.stdout }}
-          \`\`\`
-          </details>
-          #### terraform plan 📖\`${{ steps.plan.outcome }}\`
-          <details><summary>테라폼 구축 계획</summary>
-          \`\`\`\n
-          ${process.env.PLAN}
           \`\`\`
           </details>
           #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
