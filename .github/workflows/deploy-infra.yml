@@ -81,8 +81,7 @@ jobs:
     - name: summary in tree format
       id: summary
       run: |
-        pwd
-        ls -al
+        cat plan.json
         tf-summarize -tree plan.json
       
     - name: PR Comment
