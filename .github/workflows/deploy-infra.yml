@@ -59,6 +59,7 @@ jobs:
 
     - name: Install iconv
       run: |
+        cat plan.json
         iconv --version
         iconv --help
         iconv -f utf-16LE -t utf-8 -c plan.json > plan-utf8.json
