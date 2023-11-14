@@ -59,7 +59,7 @@ jobs:
 
     - name: Convert Encoding
       run: |
-        iconv -f US-ASCII -t utf-8 -c plan.json > plan-utf8.json
+        iconv -f US-ASCII -t utf-8 plan.json > plan-utf8.json
         file -bi plan.json
         file -bi plan-utf8.json
 
