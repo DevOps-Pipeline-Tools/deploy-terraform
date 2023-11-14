@@ -57,12 +57,8 @@ jobs:
         terraform plan -out tfplan.binary
         terraform show -json tfplan.binary > plan.json
 
-    - name: Install iconv
-      run: |
-        file -bi plan.json
-        iconv --version
-        iconv --help
-        iconv -f utf-16LE -t utf-8 -c plan.json > plan-utf8.json
+    - name: Convert Encoding
+      run: iconv -f US-ASCII -t utf-8 -c plan.json > plan-utf8.json
 
     - name: Setup Infracost
       uses: infracost/actions/setup@v2
