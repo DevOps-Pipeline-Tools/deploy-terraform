@@ -73,16 +73,8 @@ jobs:
 
     - name: Install terraform-plan-summary
       run: |
-        REPO="dineshba/terraform-plan-summary"
-        curl -LO https://github.com/$REPO/releases/latest/download/tf-summarize_linux_amd64.zip
-        tmpDir=$(mktemp -d -t tmp.XXXXXXXXXX)
-        mv tf-summarize_linux_amd64.zip $tmpDir
-        cd $tmpDir
-        ls -al
-        pwd
-        unzip tf-summarize_linux_amd64.zip
-        chmod +x tf-summarize
-        echo $PWD >> $GITHUB_PATH
+        curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_0.3.6_linux_amd64.deb
+        dpkg -i tf-summarize_0.3.6_linux_amd64.deb
 
     - name: summary in tree format
       id: summary
