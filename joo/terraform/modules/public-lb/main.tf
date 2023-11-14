@@ -47,12 +47,12 @@ resource "aws_lb_listener" "http" {
 
   default_action {
     type = "redirect"
-    }
 
-  redirect {
-    port        = "443"
-    protocol    = "HTTPS"
-    status_code = "HTTP_301"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 
   tags = merge(

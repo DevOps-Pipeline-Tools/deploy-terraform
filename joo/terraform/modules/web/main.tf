@@ -25,18 +25,17 @@ resource "aws_launch_template" "web" {
 # Autoscaling group
 ################################################################################
 
-resource "aws_autoscaling_group" "this" {
+resource "aws_autoscaling_group" "web" {
   name = "${var.name}-web-asg"
 
   launch_template {
     id = aws_launch_template.web.id
   }
 
-  vpc_zone_identifier = var.vpc_zone_identifier
-  min_size            = var.min_size
-  max_size            = var.max_size
-  desired_capacity    = var.desired_capacity
-  # wait_for_elb_capacity     = var.wait_for_elb_capacity
+  vpc_zone_identifier       = var.vpc_zone_identifier
+  min_size                  = var.min_size
+  max_size                  = var.max_size
+  desired_capacity          = var.desired_capacity
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
   target_group_arns         = [var.target_group_arns]

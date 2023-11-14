@@ -17,8 +17,6 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
-    env:
-      tg_version: 'v0.52.1'
     environment: joo
     defaults:
       run:
@@ -33,7 +31,7 @@ jobs:
       with: 
         role-to-assume: ${{ secrets.AWS_ROLE }}
         aws-region: ap-northeast-2
-
+        
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2
       with:
@@ -56,12 +54,45 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
       run: terraform plan -no-color
+
+    - name: Terraform plan output
+      id: plan-out
+      if: github.event_name == 'pull_request'
+      run: |
+        terraform plan -out tfplan.binary
+        terraform show -json tfplan.bianry > plan.json
+
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v2
+      with:
+        api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+    - name: Generate Infracost cost estimate
+      id: infracost
+      run: infracost breakdown --path=plan.json
+
+    - name: Install terraform-plan-summary
+      run: |
+        REPO="dineshba/terraform-plan-summary"
+        curl -LO https://github.com/$REPO/releases/latest/download/tf-summarize_linux_amd64.zip
+        tmpDir=$(mktemp -d -t tmp.XXXXXXXXXX)
+        mv tf-summarize_linux_amd64.zip $tmpDir
+        cd $tmpDir
+        unzip tf-summarize_linux_amd64.zip
+        chmod +x tf-summarize
+        echo $PWD >> $GITHUB_PATH
+
+    - name: summary in tree format
+      id: summary
+      run: tf-summarize -tree
       
-    - name: Terraform Plan Output
+    - name: PR Comment
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}" 
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
+        SUMMARY: "tf-summary\n${{ steps.summary.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -83,6 +114,26 @@ jobs:
 
           \`\`\`\n
           ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+
+          #### tf-summarize 📑\`${{ steps.summary.outcome }}\`
+
+          <details><summary>생성 리소스</summary>
+
+          \`\`\`\n
+          ${process.env.SUMMARY}
+          \`\`\`
+
+          </details>
+
+          #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
+
+          <details><summary>예상 비용</summary>
+
+          \`\`\`\n
+          ${process.env.INFRACOST}
           \`\`\`
 
           </details>
