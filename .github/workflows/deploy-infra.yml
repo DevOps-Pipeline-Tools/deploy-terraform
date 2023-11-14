@@ -80,7 +80,10 @@ jobs:
 
     - name: summary in tree format
       id: summary
-      run: tf-summarize -tree plan.json
+      run: |
+        pwd
+        ls -al
+        tf-summarize -tree plan.json
       
     - name: PR Comment
       uses: actions/github-script@v6
