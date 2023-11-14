@@ -50,32 +50,34 @@ jobs:
       id: validate
       run: terraform validate -no-color
 
-    - name: Terraform plan
-      id: plan
-      if: github.event_name == 'pull_request'
-      run: terraform plan -no-color
-
     - name: Terraform plan output
-      id: plan-out
+      id: plan
       if: github.event_name == 'pull_request'
       run: |
         terraform plan -out tfplan.binary
         terraform show -json tfplan.binary > plan.json
+
+    - name: Install iconv
+      run: iconv -f utf-16 -t utf-8 plan.json > plan-utf8.json
 
     - name: Setup Infracost
       uses: infracost/actions/setup@v2
       with:
         api-key: ${{ secrets.INFRACOST_API_KEY }}
 
-    - uses: kishaningithub/setup-tf-summarize@v1
-    - name: summary in tree format
-      id: summary
-      run: tf-summarize -json plan.json
-
     - name: Generate Infracost cost estimate
       id: infracost
       run: 
-        infracost breakdown --path=plan.json
+        infracost breakdown --path=plan-utf8.json
+
+    - name: Install terraform-plan-summary
+      run: |
+        curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
+        tar -xvf tf-summarize_linux_amd64.tar.gz
+        cp tf-summarize /usr/local/bin/
+    - name: summary in tree format
+      id: summary
+      run: tf-summarize -tree plan-utf8.json
       
     - name: PR Comment
       uses: actions/github-script@v6
@@ -92,54 +94,36 @@ jobs:
           #### terraform fmt 🖌\`${{ steps.fmt.outcome }}\`
           #### terraform validate 🤖\`${{ steps.validate.outcome }}\`
           <details><summary>문법 검사 결과</summary>
-
           \`\`\`\n
           ${{ steps.validate.outputs.stdout }}
           \`\`\`
-
           </details>
-
           #### terraform plan 📖\`${{ steps.plan.outcome }}\`
-
           <details><summary>테라폼 구축 계획</summary>
-
           \`\`\`\n
           ${process.env.PLAN}
           \`\`\`
-
           </details>
-
           #### tf-summarize 📑\`${{ steps.summary.outcome }}\`
-
           <details><summary>생성 리소스</summary>
-
           \`\`\`\n
           ${process.env.SUMMARY}
           \`\`\`
-
           </details>
-
           #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
-
           <details><summary>예상 비용</summary>
-
           \`\`\`\n
           ${process.env.INFRACOST}
           \`\`\`
-
           </details>
-
           **위의 내용으로 테라폼 배포를 요청합니다!**
-
           *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
-
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
             body: output
           })
-
     - name: Terraform Apply
       if: github.event_name == 'push'
       run: terraform apply -auto-approve
