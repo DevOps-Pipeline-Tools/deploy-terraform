@@ -78,6 +78,8 @@ jobs:
         tmpDir=$(mktemp -d -t tmp.XXXXXXXXXX)
         mv tf-summarize_linux_amd64.zip $tmpDir
         cd $tmpDir
+        ls -al
+        pwd
         unzip tf-summarize_linux_amd64.zip
         chmod +x tf-summarize
         echo $PWD >> $GITHUB_PATH
