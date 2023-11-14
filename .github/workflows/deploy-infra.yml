@@ -58,7 +58,10 @@ jobs:
         terraform show -json tfplan.binary > plan.json
 
     - name: Convert Encoding
-      run: iconv -f US-ASCII -t utf-8 -c plan.json > plan-utf8.json
+      run: |
+        iconv -f US-ASCII -t utf-8 -c plan.json > plan-utf8.json
+        file -bi plan.json
+        file -bi plan-utf8.json
 
     - name: Setup Infracost
       uses: infracost/actions/setup@v2
