@@ -50,6 +50,11 @@ jobs:
       id: validate
       run: terraform validate -no-color
       
+    - name: Terraform plan 
+      id: plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan
+
     - name: PR Comment
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
