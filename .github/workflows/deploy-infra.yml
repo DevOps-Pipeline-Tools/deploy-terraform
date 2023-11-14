@@ -57,13 +57,6 @@ jobs:
         terraform plan -out tfplan.binary
         terraform show -json tfplan.binary > plan.json
 
-    - name: Convert Encoding
-      run: |
-        locale charmap
-        file -bi --mime-encoding plan.json
-        iconv -f US-ASCII -t utf-8 plan.json -o plan-utf8.json
-        file -bi --mime-encoding plan-utf8.json
-
     - name: Setup Infracost
       uses: infracost/actions/setup@v2
       with:
@@ -72,24 +65,17 @@ jobs:
     - name: Generate Infracost cost estimate
       id: infracost
       run: 
-        infracost breakdown --path=plan-utf8.json
-
-    - name: Post Infracost comment
-      run: |
-          infracost comment github --path=plan-utf8.json \
-                                    --repo=$GITHUB_REPOSITORY \
-                                    --github-token=${{github.token}} \
-                                    --pull-request=${{github.event.pull_request.number}} \
-                                    --behavior=update
+        infracost breakdown --path=plan.json
 
     - name: Install terraform-plan-summary
       run: |
         curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
         tar -xvf tf-summarize_linux_amd64.tar.gz
         cp tf-summarize /usr/local/bin/
+        
     - name: summary in tree format
       id: summary
-      run: cat plan-utf8.json | tf-summarize -tree
+      run: cat plan.json | tf-summarize -tree
       
     - name: PR Comment
       uses: actions/github-script@v6
