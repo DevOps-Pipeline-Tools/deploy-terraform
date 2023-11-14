@@ -72,15 +72,16 @@ jobs:
       run: 
         infracost breakdown --path=plan.json
 
-    - name: Install terraform-plan-summary
-      run: |
-        curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
-        tar -xvf tf-summarize_linux_amd64.tar.gz
-        cp tf-summarize /usr/local/bin/
+    # - name: Install terraform-plan-summary
+    #   run: |
+    #     curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
+    #     tar -xvf tf-summarize_linux_amd64.tar.gz
+    #     cp tf-summarize /usr/local/bin/
 
+    - uses: kishaningithub/setup-tf-summarize@v1
     - name: summary in tree format
       id: summary
-      run: jq '.' plan.json | tf-summarize -tree
+      run: tf-summarize -tree plan.json
       
     - name: PR Comment
       uses: actions/github-script@v6
