@@ -77,7 +77,7 @@ jobs:
         cp tf-summarize /usr/local/bin/
     - name: summary in tree format
       id: summary
-      run: tf-summarize -tree plan-utf8.json
+      run: jq '.' plan-utf8.json | tf-summarize -tree
       
     - name: PR Comment
       uses: actions/github-script@v6
