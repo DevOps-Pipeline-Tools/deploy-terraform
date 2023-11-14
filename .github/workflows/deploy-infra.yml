@@ -74,7 +74,7 @@ jobs:
     - name: Install terraform-plan-summary
       run: |
         curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
-        tar -xvf tf-summarize_0.3.6_linux_amd64.tar.gz
+        tar -xvf tf-summarize_linux_amd64.tar.gz
 
     - name: summary in tree format
       id: summary
