@@ -103,7 +103,7 @@ jobs:
 
           \`\`\`\n
           ${{ steps.validate.outputs.stdout }}
-          \`\`\` 
+          \`\`\`
 
           </details>
 
