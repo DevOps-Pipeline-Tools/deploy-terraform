@@ -70,7 +70,7 @@ jobs:
     - uses: kishaningithub/setup-tf-summarize@v1
     - name: summary in tree format
       id: summary
-      run: tf-summarize -json tfplan.binary
+      run: tf-summarize -json plan.json
 
     - name: Generate Infracost cost estimate
       id: infracost
