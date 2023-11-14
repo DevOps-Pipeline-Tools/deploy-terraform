@@ -70,6 +70,14 @@ jobs:
       run: 
         infracost breakdown --path=plan-utf8.json
 
+    - name: Post Infracost comment
+      run: |
+          infracost comment github --path=/tmp/infracost.json \
+                                    --repo=$GITHUB_REPOSITORY \
+                                    --github-token=${{github.token}} \
+                                    --pull-request=${{github.event.pull_request.number}} \
+                                    --behavior=update
+
     - name: Install terraform-plan-summary
       run: |
         curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
@@ -77,7 +85,7 @@ jobs:
         cp tf-summarize /usr/local/bin/
     - name: summary in tree format
       id: summary
-      run: jq '.' plan-utf8.json | tf-summarize -tree
+      run: cat plan-utf8.json | tf-summarize -tree
       
     - name: PR Comment
       uses: actions/github-script@v6
