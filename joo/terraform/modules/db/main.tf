@@ -2,7 +2,7 @@
 # RDS
 #########################################
 
-resource "aws_db_instance" "this" {
+resource "aws_db_instance" "postgres" {
   identifier             = var.name
   engine                 = "postgres"
   engine_version         = "15.3"

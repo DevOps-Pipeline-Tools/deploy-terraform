@@ -25,7 +25,7 @@ resource "aws_launch_template" "was" {
 # Autoscaling group
 ################################################################################
 
-resource "aws_autoscaling_group" "this" {
+resource "aws_autoscaling_group" "was" {
   name = "${var.name}-was-asg"
 
   launch_template {

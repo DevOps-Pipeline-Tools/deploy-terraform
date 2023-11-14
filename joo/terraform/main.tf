@@ -139,3 +139,7 @@ module "db" {
   was_sg_id         = module.was.security_group_id
   subnet_ids        = module.network.db_subnets
 }
+
+output "db_instance_hosted_zone_id" {
+  value = module.db.db_instance_hosted_zone_id
+}

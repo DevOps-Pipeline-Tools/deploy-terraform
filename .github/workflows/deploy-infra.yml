@@ -2,6 +2,9 @@ name: Terraform AWS Workflow
 on:
   push:
     branches: [ main ]
+    paths: 
+      - 'joo/terraform/**'
+      - '.github/workflows/deploy-infra.yml'
   pull_request:
     branches: [ main ]
     paths: 
@@ -14,8 +17,6 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
-    env:
-      tg_version: 'v0.52.1'
     environment: joo
     defaults:
       run:
@@ -30,7 +31,7 @@ jobs:
       with: 
         role-to-assume: ${{ secrets.AWS_ROLE }}
         aws-region: ap-northeast-2
-
+        
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2
       with:
@@ -48,17 +49,17 @@ jobs:
     - name: Terraform validate
       id: validate
       run: terraform validate -no-color
-
-    - name: Terraform plan
+      
+    - name: Terraform plan 
       id: plan
       if: github.event_name == 'pull_request'
-      run: terraform plan -no-color
-      
-    - name: Terraform Plan Output
+      run: terraform plan
+
+    - name: PR Comment
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}" 
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -94,7 +95,6 @@ jobs:
             repo: context.repo.repo,
             body: output
           })
-
     - name: Terraform Apply
       if: github.event_name == 'push'
       run: terraform apply -auto-approve
