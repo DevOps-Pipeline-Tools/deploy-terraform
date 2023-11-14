@@ -65,17 +65,7 @@ jobs:
     - name: Generate Infracost cost estimate
       id: infracost
       run: 
-        infracost breakdown --path=plan.json
-
-    - name: Install terraform-plan-summary
-      run: |
-        curl -LO https://github.com/dineshba/tf-summarize/releases/download/v0.3.6/tf-summarize_linux_amd64.tar.gz
-        tar -xvf tf-summarize_linux_amd64.tar.gz
-        cp tf-summarize /usr/local/bin/
-        
-    - name: summary in tree format
-      id: summary
-      run: cat plan.json | tf-summarize -tree
+        infracost breakdown --show-skipped --path=plan.json
       
     - name: PR Comment
       uses: actions/github-script@v6
@@ -83,7 +73,6 @@ jobs:
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
-        SUMMARY: "tf-summary\n${{ steps.summary.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -100,12 +89,6 @@ jobs:
           <details><summary>테라폼 구축 계획</summary>
           \`\`\`\n
           ${process.env.PLAN}
-          \`\`\`
-          </details>
-          #### tf-summarize 📑\`${{ steps.summary.outcome }}\`
-          <details><summary>생성 리소스</summary>
-          \`\`\`\n
-          ${process.env.SUMMARY}
           \`\`\`
           </details>
           #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
