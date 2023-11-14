@@ -69,9 +69,16 @@ jobs:
 
     - name: Generate Infracost cost estimate
       id: infracost
-      run: 
-        infracost breakdown --path=plan.json
+      run: infracost breakdown --path=plan.json
       
+    - name: Post Infracost comment
+      run: |
+          infracost comment github --path=plan.json \
+                                    --repo=$GITHUB_REPOSITORY \
+                                    --github-token=${{github.token}} \
+                                    --pull-request=${{github.event.pull_request.number}} \
+                                    --behavior=update
+
     - name: PR Comment
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
