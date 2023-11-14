@@ -104,16 +104,6 @@ jobs:
 
           </details>
 
-          #### tf-summarize 📑\`${{ steps.summary.outcome }}\`
-
-          <details><summary>생성 리소스</summary>
-
-          \`\`\`\n
-          ${process.env.SUMMARY}
-          \`\`\`
-
-          </details>
-
           #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
 
           <details><summary>예상 비용</summary>
