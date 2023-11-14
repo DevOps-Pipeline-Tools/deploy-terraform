@@ -61,7 +61,7 @@ jobs:
       run: |
         iconv --version
         iconv --help
-        iconv -f utf-16 -t utf-8 -o 1024 plan.json > plan-utf8.json
+        iconv -f utf-16LE -t utf-8 -c plan.json > plan-utf8.json
 
     - name: Setup Infracost
       uses: infracost/actions/setup@v2
