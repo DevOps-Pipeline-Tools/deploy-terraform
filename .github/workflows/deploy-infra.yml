@@ -59,7 +59,9 @@ jobs:
 
     - name: Convert Encoding
       run: |
-        iconv -f utf-8 -t utf-8 plan.json > plan-utf8.json
+        locale charmap
+        file -bi plan.json
+        iconv -f US-ASCII -t utf-8 plan.json -o plan-utf8.json
         file -bi plan-utf8.json
 
     - name: Setup Infracost
