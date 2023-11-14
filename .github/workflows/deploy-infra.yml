@@ -49,30 +49,12 @@ jobs:
     - name: Terraform validate
       id: validate
       run: terraform validate -no-color
-
-    - name: Terraform plan output
-      id: plan
-      if: github.event_name == 'pull_request'
-      run: |
-        terraform plan -out tfplan.binary
-        terraform show -json tfplan.binary > plan.json
-
-    - name: Setup Infracost
-      uses: infracost/actions/setup@v2
-      with:
-        api-key: ${{ secrets.INFRACOST_API_KEY }}
-
-    - name: Generate Infracost cost estimate
-      id: infracost
-      run: 
-        infracost breakdown --show-skipped --path=plan.json
       
     - name: PR Comment
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
-        # PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -85,10 +67,10 @@ jobs:
           ${{ steps.validate.outputs.stdout }}
           \`\`\`
           </details>
-          #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
-          <details><summary>예상 비용</summary>
+          #### terraform plan 📖\`${{ steps.plan.outcome }}\`
+          <details><summary>테라폼 구축 계획</summary>
           \`\`\`\n
-          ${process.env.INFRACOST}
+          ${process.env.PLAN}
           \`\`\`
           </details>
           **위의 내용으로 테라폼 배포를 요청합니다!**
