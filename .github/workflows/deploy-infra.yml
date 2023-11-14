@@ -57,24 +57,33 @@ jobs:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
+        script: | #javascript code
          const output = `## 테라폼 구축 계획
           #### terraform init ⚙️\`${{ steps.init.outcome }}\`
           #### terraform fmt 🖌\`${{ steps.fmt.outcome }}\`
           #### terraform validate 🤖\`${{ steps.validate.outcome }}\`
           <details><summary>문법 검사 결과</summary>
+
           \`\`\`\n
           ${{ steps.validate.outputs.stdout }}
           \`\`\`
+
           </details>
+
           #### terraform plan 📖\`${{ steps.plan.outcome }}\`
+
           <details><summary>테라폼 구축 계획</summary>
+
           \`\`\`\n
           ${process.env.PLAN}
           \`\`\`
+
           </details>
+
           **위의 내용으로 테라폼 배포를 요청합니다!**
+
           *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
