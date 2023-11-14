@@ -67,9 +67,9 @@ jobs:
       with:
         api-key: ${{ secrets.INFRACOST_API_KEY }}
 
-    - name: Generate Infracost cost estimate
-      id: infracost
-      run: infracost breakdown --path=plan.json
+    # - name: Generate Infracost cost estimate
+    #   id: infracost
+    #   run: infracost breakdown --path=plan.json
       
     - name: Post Infracost comment
       run: |
@@ -83,7 +83,7 @@ jobs:
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
-        INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
+        # INFRACOST: "infracost\n${{ steps.infracost.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -99,14 +99,6 @@ jobs:
           \`\`\`
 
           </details>
-
-          #### infracost breakdown 💎\`${{ steps.infracost.outcome }}\`
-
-          <details><summary>예상 비용</summary>
-
-          \`\`\`\n
-          ${process.env.INFRACOST}
-          \`\`\`
 
           </details>
 
